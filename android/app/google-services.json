@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "945126376253",
+    "firebase_url": "https://uniresys.firebaseio.com",
+    "project_id": "uniresys",
+    "storage_bucket": "uniresys.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945126376253:android:8b36f4c34b03f45f107b54",
+        "android_client_info": {
+          "package_name": "com.axnmol.uniresys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945126376253-8h29amdgosudcj77921knq13tthbei37.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcIIR5KnH4X2tuhCGkg7-zPWcTgP-9CbU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945126376253-8h29amdgosudcj77921knq13tthbei37.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
