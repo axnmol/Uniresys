@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:uniresys/entities/entities.dart';
 
 import 'package:uniresys/screens/home_screen.dart';
 import 'package:uniresys/screens/register_screen.dart';
@@ -14,8 +15,9 @@ import 'package:uniresys/flutterfire/fireauth.dart';
 import 'package:uniresys/flutterfire/firestore.dart';
 import 'package:uniresys/users.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     MyApp(), // Main App
   );
@@ -52,6 +54,12 @@ class MyApp extends StatelessWidget {
               ),
               ChangeNotifierProvider<SignUpIn>(
                 create: (BuildContext context) => SignUpIn(),
+              ),
+              StreamProvider<List<Degree>>(
+                create: (context) => FirestoreUni().getDegrees(),
+              ),
+              StreamProvider<List<Course>>(
+                create: (context) => FirestoreUni().getCourses(),
               )
             ],
             child: MaterialApp(

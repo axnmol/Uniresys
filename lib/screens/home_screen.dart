@@ -36,8 +36,9 @@ class HomeScreen extends StatelessWidget {
       if (s == 'Success') {
         Provider.of<UserManage>(context, listen: false)
             .showMyDialog(context, 'Logged In', 1);
-      } else if (s != null)
+      } else if (s != null) {
         Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
+      }
     }
 
     final emailField = TextFormField(
@@ -107,6 +108,7 @@ class HomeScreen extends StatelessWidget {
           if (Provider.of<UserManage>(context, listen: false).getSelect() !=
               1) {
             _formKey.currentState.reset();
+            Provider.of<UserManage>(context,listen: false).setSelected(null);
             Navigator.pushNamed(context, RegisterScreen.id);
           } else {
             Provider.of<UserManage>(context, listen: false)
@@ -214,7 +216,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        isLoading: Provider.of<UserManage>(context, listen: false).getLoad(),
+        isLoading: Provider.of<UserManage>(context).getLoad(),
         opacity: 0.5,
         progressIndicator: SpinKitDoubleBounce(
           color: Colors.white,

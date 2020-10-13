@@ -12,8 +12,8 @@ class Users{
 class UserManage extends ChangeNotifier{
   bool _isLoad = false;
   int pointer=1;
-  final List<String> _ids=['Enrollment','','Enlistment'];
-  final List<String> _drop=['Degree','','Subject'];
+  String selected;
+  final List<String> _drop=['Degree','','Course'];
   final List<Users> _users=[
     Users('Student'),
     Users('Admin'),
@@ -83,6 +83,15 @@ class UserManage extends ChangeNotifier{
     );
   }
 
+  void setSelected(String string){
+    selected = string ;
+    notifyListeners();
+  }
+
+  String getSelected(){
+    return selected;
+  }
+
   void setSelect(int n){
     if(n>2&&n<0)return;
     pointer=n;
@@ -104,10 +113,6 @@ class UserManage extends ChangeNotifier{
 
   String getName(){
     return _users[pointer].getName();
-  }
-
-  String getId(){
-    return _ids[pointer];
   }
 
   String getDrop(){

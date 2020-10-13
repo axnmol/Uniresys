@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:email_validator/email_validator.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 
+import 'package:uniresys/entities/entities.dart';
+import 'package:uniresys/flutterfire/firestore.dart';
+import 'package:uniresys/main.dart';
 import 'package:uniresys/users.dart';
 import 'package:uniresys/flutterfire/fireauth.dart';
 
-FirebaseAuth auth = FirebaseAuth.instance;
-
 class RegisterScreen extends StatelessWidget {
   static const String id = 'register_screen';
+
   final _rFormKey = GlobalKey<FormState>();
   final FocusNode _nameFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
@@ -25,6 +25,24 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String name, phone, id, mail, pass, vpass;
+
+    List<String> makeStrC(List<Course> temp) {
+      var lol = <String>[];
+      var length = temp.length;
+      for (var i = 0; i < length; ++i) {
+        lol.add(temp[i].getName());
+      }
+      return lol;
+    }
+
+    List<String> makeStrD(List<Degree> temp) {
+      var lol = <String>[];
+      var length = temp.length;
+      for (var i = 0; i < length; ++i) {
+        lol.add(temp[i].getName());
+      }
+      return lol;
+    }
 
     void register() async {
       String s;
@@ -45,8 +63,9 @@ class RegisterScreen extends StatelessWidget {
         Provider.of<UserManage>(context, listen: false)
             .showMyDialog(context, 'Registered', 1);
         _rFormKey.currentState.reset();
-      } else if (s != null)
+      } else if (s != null) {
         Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
+      }
     }
 
     final nameField = TextFormField(
@@ -123,7 +142,7 @@ class RegisterScreen extends StatelessWidget {
           FocusScope.of(context).requestFocus(_verifyFocus);
         });
 
-    final vpassField = TextFormField(
+    final vPassField = TextFormField(
         keyboardType: TextInputType.text,
         obscureText: true,
         style: TextStyle(),
@@ -151,45 +170,13 @@ class RegisterScreen extends StatelessWidget {
         onSaved: (input) => id = input,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: Provider.of<UserManage>(context).getId() + ' Id',
+            labelText: Provider.of<UserManage>(context).getName() + ' Id',
             hintText: 'Enter Id.',
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _idFocus.unfocus();
         });
-
-    final dropDown = Material(
-      elevation: 10,
-      shadowColor: Colors.blueAccent,
-      borderRadius: BorderRadius.circular(30),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 60),
-        child: DropdownButton<String>(
-          value: null,
-          icon: Icon(Icons.arrow_drop_down),
-          iconDisabledColor: Colors.blueAccent,
-          style:
-              TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
-          underline: Container(
-            height: 1,
-            color: Colors.blueAccent,
-          ),
-          items: <String>['One', 'Two', 'Three', 'Four']
-              .map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Center(child: Text(value)),
-            );
-          }).toList(),
-          onChanged: (String newValue) {},
-          hint: Text(
-            'Please select a ' + Provider.of<UserManage>(context).getDrop(),
-            style: TextStyle(color: Colors.blueAccent),
-          ),
-        ),
-      ),
-    );
 
     final registerButton = Material(
       elevation: 10,
@@ -206,6 +193,100 @@ class RegisterScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
+    );
+
+    final dropDownF = Material(
+      elevation: 10,
+      shadowColor: Colors.blueAccent,
+      borderRadius: BorderRadius.circular(30),
+      child: StreamBuilder<List<Course>>(
+          stream: Provider.of<FirestoreUni>(context).getCourses(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: SpinKitDoubleBounce(
+                  color: Colors.white,
+                  size: 150,
+                ),
+              );
+            }
+            var list = makeStrC(snapshot.data);
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 60),
+              child: DropdownButton<String>(
+                value: Provider.of<UserManage>(context).getSelected(),
+                icon: Icon(Icons.arrow_drop_down),
+                iconDisabledColor: Colors.blueAccent,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                underline: Container(
+                  height: 1,
+                  color: Colors.blueAccent,
+                ),
+                items: list.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String newValue) {
+                  Provider.of<UserManage>(context,listen: false).setSelected(newValue);
+                },
+                hint: Text(
+                  'Please select a ' +
+                      Provider.of<UserManage>(context).getDrop(),
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
+              ),
+            );
+          }),
+    );
+
+    final dropDownS = Material(
+      elevation: 10,
+      shadowColor: Colors.blueAccent,
+      borderRadius: BorderRadius.circular(30),
+      child: StreamBuilder<List<Degree>>(
+          stream: Provider.of<FirestoreUni>(context).getDegrees(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: SpinKitDoubleBounce(
+                  color: Colors.white,
+                  size: 150,
+                ),
+              );
+            }
+            var list = makeStrD(snapshot.data);
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 60),
+              child: DropdownButton<String>(
+                value: Provider.of<UserManage>(context).getSelected(),
+                icon: Icon(Icons.arrow_drop_down),
+                iconDisabledColor: Colors.blueAccent,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                underline: Container(
+                  height: 1,
+                  color: Colors.blueAccent,
+                ),
+                items: list.map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (String newValue) {
+                  Provider.of<UserManage>(context,listen: false).setSelected(newValue);
+                },
+                hint: Text(
+                  'Please select a ' +
+                      Provider.of<UserManage>(context).getDrop(),
+                  style: TextStyle(color: Colors.blueAccent),
+                ),
+              ),
+            );
+          }),
     );
 
     return Scaffold(
@@ -235,11 +316,12 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(height: 15.0),
                   passField,
                   SizedBox(height: 15.0),
-                  vpassField,
+                  vPassField,
                   SizedBox(height: 15.0),
                   idField,
                   SizedBox(height: 40),
-                  dropDown,
+                  if(Provider.of<UserManage>(context).getSelect()==0)dropDownS,
+                  if(Provider.of<UserManage>(context).getSelect()==2)dropDownF,
                   SizedBox(height: 40),
                   registerButton,
                 ],
