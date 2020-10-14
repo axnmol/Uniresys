@@ -10,6 +10,11 @@ import 'package:uniresys/entities/entities.dart';
 class FirestoreUni extends ChangeNotifier {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String _error;
+  Student student;
+  Faculty faculty;
+  Course course;
+  Degree degree;
+  Registered registered;
 
   Future addFeed(String str, BuildContext context) async{
     Provider.of<UserManage>(context, listen: false).toggle_Load();
@@ -21,6 +26,15 @@ class FirestoreUni extends ChangeNotifier {
         .then((value) => _error = 'Success')
         .catchError((dynamic e) => {_error = e.toString().toUpperCase()});
     Provider.of<UserManage>(context, listen: false).toggle_Load();
+  }
+
+  Stream<List<Registered>> getRegistered(){
+    return firestore
+        .collection('registered')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Registered.fromJson(doc.data()))
+        .toList());
   }
 
   Stream<List<Course>> getCourses(){
@@ -41,12 +55,20 @@ class FirestoreUni extends ChangeNotifier {
         .toList());
   }
 
-  Future<void> setDegree(Degree degree){
+  Future<void> setStudent(){
     var options = SetOptions(merge:true);
     return firestore
-        .collection('degrees')
-        .doc(degree.Id.toString())
-        .set(degree.toMap(),options);
+        .collection('students')
+        .doc(student.Id.toString())
+        .set(student.toMap(),options);
+  }
+
+  Future<void> setFaculty(){
+    var options = SetOptions(merge:true);
+    return firestore
+        .collection('faculties')
+        .doc(faculty.Id.toString())
+        .set(faculty.toMap(),options);
   }
 
   Future<void> removeDegree(String degreeId){

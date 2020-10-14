@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:uniresys/screens/profile_screen.dart';
 
 class Users{
   String name;
   Users(this.name);
-
-  String getName(){
-    return name;
-  }
 }
 
 class UserManage extends ChangeNotifier{
-  bool _isLoad = false;
+  bool isLoad = false;
   int pointer=1;
   String selected;
   final List<String> _drop=['Degree','','Course'];
@@ -24,7 +21,7 @@ class UserManage extends ChangeNotifier{
     dynamic msg;
     // For Sign In and Sign Up
     if(x==1) {
-      msg = _users[pointer].getName()+ ' Successfully '+str;
+      msg = _users[pointer].name + ' Successfully '+str;
     }
     // For Feedback
     if(x==2) {
@@ -48,6 +45,9 @@ class UserManage extends ChangeNotifier{
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.maybePop(context);
+                if(x==1){
+                  Navigator.pushNamed(context, ProfileScreen.id);
+                }
               },
             ),
           ],
@@ -88,9 +88,6 @@ class UserManage extends ChangeNotifier{
     notifyListeners();
   }
 
-  String getSelected(){
-    return selected;
-  }
 
   void setSelect(int n){
     if(n>2&&n<0)return;
@@ -98,21 +95,13 @@ class UserManage extends ChangeNotifier{
     notifyListeners();
   }
 
-  int getSelect(){
-    return pointer;
-  }
-
-  bool getLoad(){
-    return _isLoad;
-  }
-
   void toggle_Load(){
-    _isLoad=_isLoad?false:true;
+    isLoad=isLoad?false:true;
     notifyListeners();
   }
 
   String getName(){
-    return _users[pointer].getName();
+    return _users[pointer].name;
   }
 
   String getDrop(){

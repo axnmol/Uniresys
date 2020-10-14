@@ -8,9 +8,9 @@ import 'package:uniresys/users.dart';
 
 class SignUpIn extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
-  String _error;
+  String _error,e,p,vp;
 
-  Future signIn(String e, String p, BuildContext context) async{
+  Future signIn(BuildContext context) async{
     Provider.of<UserManage>(context, listen: false).toggle_Load();
     try {
       var userCredential = await FirebaseAuth.instance
@@ -31,7 +31,7 @@ class SignUpIn extends ChangeNotifier {
     await _error;
   }
 
-  Future signUP(String e, String p,String vp, BuildContext context) async{
+  Future signUP(BuildContext context) async{
     Provider.of<UserManage>(context, listen: false).toggle_Load();
     try {
         var userCredential = await FirebaseAuth.instance

@@ -24,15 +24,13 @@ class HomeScreen extends StatelessWidget {
 
     void login() async {
       String s;
-      if (_formKey.currentState.validate()) {
-        _formKey.currentState.save();
-        FocusScope.of(context).requestFocus(FocusNode());
-        await Provider.of<SignUpIn>(context, listen: false)
-            .signIn(_email, _password, context);
-        s = Provider.of<SignUpIn>(context, listen: false).getMsg();
-        _passFocus.unfocus();
-        _formKey.currentState.reset();
-      }
+      Provider.of<SignUpIn>(context, listen: false).e = _email;
+      Provider.of<SignUpIn>(context, listen: false).p = _password;
+      FocusScope.of(context).requestFocus(FocusNode());
+      await Provider.of<SignUpIn>(context, listen: false).signIn(context);
+      s = Provider.of<SignUpIn>(context, listen: false).getMsg();
+      _passFocus.unfocus();
+      _formKey.currentState.reset();
       if (s == 'Success') {
         Provider.of<UserManage>(context, listen: false)
             .showMyDialog(context, 'Logged In', 1);
@@ -88,7 +86,10 @@ class HomeScreen extends StatelessWidget {
         minWidth: MediaQuery.of(context).size.width / 3,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          login();
+          if (_formKey.currentState.validate()) {
+            _formKey.currentState.save();
+            login();
+          }
         },
         child: Text('Sign In',
             textAlign: TextAlign.center,
@@ -105,10 +106,9 @@ class HomeScreen extends StatelessWidget {
         minWidth: MediaQuery.of(context).size.width / 3,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
-          if (Provider.of<UserManage>(context, listen: false).getSelect() !=
-              1) {
+          if (Provider.of<UserManage>(context, listen: false).pointer != 1) {
             _formKey.currentState.reset();
-            Provider.of<UserManage>(context,listen: false).setSelected(null);
+            Provider.of<UserManage>(context, listen: false).setSelected(null);
             Navigator.pushNamed(context, RegisterScreen.id);
           } else {
             Provider.of<UserManage>(context, listen: false)
@@ -216,7 +216,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        isLoading: Provider.of<UserManage>(context).getLoad(),
+        isLoading: Provider.of<UserManage>(context).isLoad,
         opacity: 0.5,
         progressIndicator: SpinKitDoubleBounce(
           color: Colors.white,

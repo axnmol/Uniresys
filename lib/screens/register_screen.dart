@@ -7,10 +7,10 @@ import 'package:provider/provider.dart';
 
 import 'package:uniresys/entities/entities.dart';
 import 'package:uniresys/flutterfire/firestore.dart';
-import 'package:uniresys/main.dart';
 import 'package:uniresys/users.dart';
 import 'package:uniresys/flutterfire/fireauth.dart';
 
+// ignore: must_be_immutable
 class RegisterScreen extends StatelessWidget {
   static const String id = 'register_screen';
 
@@ -22,42 +22,69 @@ class RegisterScreen extends StatelessWidget {
   final FocusNode _passFocus = FocusNode();
   final FocusNode _verifyFocus = FocusNode();
 
+  var result = false;
+  var registerBool = true;
+
   @override
   Widget build(BuildContext context) {
-    String name, phone, id, mail, pass, vpass;
+    String name, phone, mail, pass, vPass;
+    int id;
 
     List<String> makeStrC(List<Course> temp) {
-      var lol = <String>[];
+      var list = <String>[];
       var length = temp.length;
       for (var i = 0; i < length; ++i) {
-        lol.add(temp[i].getName());
+        list.add(temp[i].Name);
       }
-      return lol;
+      return list;
     }
 
     List<String> makeStrD(List<Degree> temp) {
       var lol = <String>[];
       var length = temp.length;
       for (var i = 0; i < length; ++i) {
-        lol.add(temp[i].getName());
+        lol.add(temp[i].Name);
       }
       return lol;
     }
 
     void register() async {
       String s;
-      if (_rFormKey.currentState.validate()) {
-        _rFormKey.currentState.save();
-        FocusScope.of(context).requestFocus(FocusNode());
-        if (pass == vpass) {
-          FocusScope.of(context).requestFocus(FocusNode());
-          await Provider.of<SignUpIn>(context, listen: false)
-              .signUP(mail, pass, vpass, context);
-          s = Provider.of<SignUpIn>(context, listen: false).getMsg();
+      Provider.of<SignUpIn>(context, listen: false).e = mail;
+      Provider.of<SignUpIn>(context, listen: false).p = pass;
+      Provider.of<SignUpIn>(context, listen: false).vp = vPass;
+
+      FocusScope.of(context).requestFocus(FocusNode());
+      if (pass == vPass) {
+        if (result) {
+          if (registerBool) {
+            FocusScope.of(context).requestFocus(FocusNode());
+            await Provider.of<SignUpIn>(context, listen: false).signUP(context);
+            if (Provider.of<UserManage>(context, listen: false).pointer == 0) {
+              Provider.of<FirestoreUni>(context, listen: false).student =
+                  Student(id, name, mail, phone);
+              await Provider.of<FirestoreUni>(context, listen: false)
+                  .setStudent();
+            }
+            if (Provider.of<UserManage>(context, listen: false).pointer == 2) {
+              Provider.of<FirestoreUni>(context, listen: false).faculty =
+                  Faculty(id, name, mail, phone);
+              await Provider.of<FirestoreUni>(context, listen: false)
+                  .setFaculty();
+            }
+            s = Provider.of<SignUpIn>(context, listen: false).getMsg();
+          } else {
+            s = Provider.of<UserManage>(context, listen: false).getName() +
+                ' already registered.';
+          }
         } else {
-          Provider.of<UserManage>(context, listen: false).toggle_Load();
-          s = 'Password do not match with Verify password';
+          s = Provider.of<UserManage>(context, listen: false).getName() +
+              ' Id not found in chosen ' +
+              Provider.of<UserManage>(context, listen: false).getDrop();
         }
+      } else {
+        Provider.of<UserManage>(context, listen: false).toggle_Load();
+        s = 'Password do not match with Verify password';
       }
       if (s == 'Success') {
         Provider.of<UserManage>(context, listen: false)
@@ -66,6 +93,9 @@ class RegisterScreen extends StatelessWidget {
       } else if (s != null) {
         Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
       }
+      result = false;
+      registerBool = true;
+      Provider.of<UserManage>(context, listen: false).setSelected(null);
     }
 
     final nameField = TextFormField(
@@ -149,7 +179,7 @@ class RegisterScreen extends StatelessWidget {
         textInputAction: TextInputAction.next,
         focusNode: _verifyFocus,
         validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => vpass = input,
+        onSaved: (input) => vPass = input,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Verify Password',
@@ -167,7 +197,7 @@ class RegisterScreen extends StatelessWidget {
         textInputAction: TextInputAction.done,
         focusNode: _idFocus,
         validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => id = input,
+        onSaved: (input) => id = int.parse(input),
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: Provider.of<UserManage>(context).getName() + ' Id',
@@ -183,16 +213,39 @@ class RegisterScreen extends StatelessWidget {
       shadowColor: Colors.blueAccent,
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.blueAccent,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width / 3,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          register();
-        },
-        child: Text('Register',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
+      child: StreamBuilder<List<Registered>>(
+          stream: Provider.of<FirestoreUni>(context).getRegistered(),
+          builder: (context, snap) {
+            if (!snap.hasData) {
+              return Center(
+                child: SpinKitDoubleBounce(
+                  color: Colors.white,
+                  size: 150,
+                ),
+              );
+            }
+            return MaterialButton(
+              minWidth: MediaQuery.of(context).size.width / 3,
+              padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+              onPressed: () {
+                if (_rFormKey.currentState.validate()) {
+                  _rFormKey.currentState.save();
+                  var len = snap.data.length;
+                  for (var i = 0; i < len; ++i) {
+                    if (snap.data[i].Id == id) {
+                      registerBool = false;
+                      break;
+                    }
+                  }
+                }
+                register();
+              },
+              child: Text('Register',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold)),
+            );
+          }),
     );
 
     final dropDownF = Material(
@@ -214,7 +267,7 @@ class RegisterScreen extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 60),
               child: DropdownButton<String>(
-                value: Provider.of<UserManage>(context).getSelected(),
+                value: Provider.of<UserManage>(context).selected,
                 icon: Icon(Icons.arrow_drop_down),
                 iconDisabledColor: Colors.blueAccent,
                 style: TextStyle(
@@ -226,11 +279,24 @@ class RegisterScreen extends StatelessWidget {
                 items: list.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Center(child: Text(value)),
                   );
                 }).toList(),
                 onChanged: (String newValue) {
-                  Provider.of<UserManage>(context,listen: false).setSelected(newValue);
+                  if (_rFormKey.currentState.validate()) {
+                    _rFormKey.currentState.save();
+                    var len = snapshot.data.length;
+                    for (var i = 0; i < len; ++i) {
+                      if (snapshot.data[i].Name == newValue) {
+                        if (snapshot.data[i].Faculty_Id == id) {
+                          result = true;
+                          break;
+                        }
+                      }
+                    }
+                  }
+                  Provider.of<UserManage>(context, listen: false)
+                      .setSelected(newValue);
                 },
                 hint: Text(
                   'Please select a ' +
@@ -252,7 +318,7 @@ class RegisterScreen extends StatelessWidget {
             if (!snapshot.hasData) {
               return Center(
                 child: SpinKitDoubleBounce(
-                  color: Colors.white,
+                  color: Colors.blueAccent,
                   size: 150,
                 ),
               );
@@ -261,7 +327,7 @@ class RegisterScreen extends StatelessWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 60),
               child: DropdownButton<String>(
-                value: Provider.of<UserManage>(context).getSelected(),
+                value: Provider.of<UserManage>(context).selected,
                 icon: Icon(Icons.arrow_drop_down),
                 iconDisabledColor: Colors.blueAccent,
                 style: TextStyle(
@@ -273,11 +339,26 @@ class RegisterScreen extends StatelessWidget {
                 items: list.map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value),
+                    child: Center(child: Text(value)),
                   );
                 }).toList(),
                 onChanged: (String newValue) {
-                  Provider.of<UserManage>(context,listen: false).setSelected(newValue);
+                  if (_rFormKey.currentState.validate()) {
+                    _rFormKey.currentState.save();
+                    var len = snapshot.data.length;
+                    for (var i = 0; i < len; ++i) {
+                      if (snapshot.data[i].Name == newValue) {
+                        var ids = snapshot.data[i].Student_Ids;
+                        for (var j = 0; j < ids.length; ++j) {
+                          if (ids[j] == id) {
+                            result = true;
+                          }
+                        }
+                      }
+                    }
+                  }
+                  Provider.of<UserManage>(context, listen: false)
+                      .setSelected(newValue);
                 },
                 hint: Text(
                   'Please select a ' +
@@ -294,8 +375,18 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         elevation: 25,
         brightness: Brightness.dark,
-        title:
-            Text(Provider.of<UserManage>(context).getName() + ' Registration'),
+        title: Center(
+            child: Text(
+                Provider.of<UserManage>(context).getName() + ' Registration')),
+        actions: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 20.0),
+            child: Icon(
+              Icons.person,
+              size: 30.0,
+            ),
+          )
+        ],
       ),
       body: LoadingOverlay(
         child: SafeArea(
@@ -320,8 +411,8 @@ class RegisterScreen extends StatelessWidget {
                   SizedBox(height: 15.0),
                   idField,
                   SizedBox(height: 40),
-                  if(Provider.of<UserManage>(context).getSelect()==0)dropDownS,
-                  if(Provider.of<UserManage>(context).getSelect()==2)dropDownF,
+                  if (Provider.of<UserManage>(context).pointer == 0) dropDownS,
+                  if (Provider.of<UserManage>(context).pointer == 2) dropDownF,
                   SizedBox(height: 40),
                   registerButton,
                 ],
@@ -329,7 +420,7 @@ class RegisterScreen extends StatelessWidget {
             ),
           ),
         ),
-        isLoading: Provider.of<UserManage>(context, listen: false).getLoad(),
+        isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
         opacity: 0.5,
         progressIndicator: SpinKitDoubleBounce(
           color: Colors.white,

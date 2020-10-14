@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:uniresys/entities/entities.dart';
 
 import 'package:uniresys/screens/home_screen.dart';
+import 'package:uniresys/screens/profile_screen.dart';
 import 'package:uniresys/screens/register_screen.dart';
 import 'package:uniresys/screens/contact_screen.dart';
 
@@ -55,12 +55,6 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider<SignUpIn>(
                 create: (BuildContext context) => SignUpIn(),
               ),
-              StreamProvider<List<Degree>>(
-                create: (context) => FirestoreUni().getDegrees(),
-              ),
-              StreamProvider<List<Course>>(
-                create: (context) => FirestoreUni().getCourses(),
-              )
             ],
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
@@ -83,6 +77,11 @@ class MyApp extends StatelessWidget {
                   case ContactScreen.id:
                     return PageTransition<void>(
                         child: ContactScreen(),
+                        type: PageTransitionType.fade,
+                        duration: Duration(milliseconds: 400));
+                  case ProfileScreen.id:
+                    return PageTransition<void>(
+                        child: ProfileScreen(),
                         type: PageTransitionType.fade,
                         duration: Duration(milliseconds: 400));
                     break;

@@ -181,7 +181,7 @@ class ContactScreen extends StatelessWidget {
             ),
           ),
         ),
-        isLoading: Provider.of<UserManage>(context, listen: false).getLoad(),
+        isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
         opacity: 0.5,
         progressIndicator: SpinKitDoubleBounce(
           color: Colors.white,
