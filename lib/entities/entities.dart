@@ -16,6 +16,30 @@ class Registered{
   }
 }
 
+class Admin{
+  final String Email;
+  final String Name;
+  final String Phone;
+
+  Admin(this.Email,this.Name,this.Phone);
+
+  factory Admin.fromJson(Map<String,dynamic> json){
+    return Admin(
+      json['Email'],
+      json['Name'],
+      json['Phone']
+    );
+  }
+
+  Map<String,dynamic> toMap(){
+    return<String,dynamic>{
+      'Email':Email,
+      'Name':Name,
+      'Phone':Phone
+    };
+  }
+}
+
 class Degree{
   final int Id;
   final String Name;

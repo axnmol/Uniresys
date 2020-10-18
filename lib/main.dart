@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:uniresys/screens/admin_screen.dart';
 
+import 'package:uniresys/screens/change_screen.dart';
 import 'package:uniresys/screens/home_screen.dart';
 import 'package:uniresys/screens/profile_screen.dart';
 import 'package:uniresys/screens/register_screen.dart';
 import 'package:uniresys/screens/contact_screen.dart';
+import 'package:uniresys/screens/update_screen.dart';
 
 import 'package:page_transition/page_transition.dart';
 import 'package:provider/provider.dart';
@@ -82,6 +85,23 @@ class MyApp extends StatelessWidget {
                   case ProfileScreen.id:
                     return PageTransition<void>(
                         child: ProfileScreen(),
+                        type: PageTransitionType.fade,
+                        duration: Duration(milliseconds: 400));
+                    break;
+                  case ChangeScreen.id:
+                    return PageTransition<void>(
+                        child: ChangeScreen(),
+                        type: PageTransitionType.fade,
+                        duration: Duration(milliseconds: 400));
+                    break;
+                  case UpdateScreen.id:
+                    return PageTransition<void>(
+                        child: UpdateScreen(),
+                        type: PageTransitionType.fade,
+                        duration: Duration(milliseconds: 400));
+                  case AdminScreen.id:
+                    return PageTransition<void>(
+                        child: AdminScreen(),
                         type: PageTransitionType.fade,
                         duration: Duration(milliseconds: 400));
                     break;

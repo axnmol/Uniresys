@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uniresys/screens/profile_screen.dart';
 
 class Users{
@@ -46,7 +47,7 @@ class UserManage extends ChangeNotifier{
                 Navigator.pop(context);
                 Navigator.maybePop(context);
                 if(x==1){
-                  Navigator.pushNamed(context, ProfileScreen.id);
+                    Navigator.pushNamed(context, ProfileScreen.id);
                 }
               },
             ),

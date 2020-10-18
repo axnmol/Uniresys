@@ -50,52 +50,55 @@ class RegisterScreen extends StatelessWidget {
 
     void register() async {
       String s;
-      Provider.of<SignUpIn>(context, listen: false).e = mail;
-      Provider.of<SignUpIn>(context, listen: false).p = pass;
-      Provider.of<SignUpIn>(context, listen: false).vp = vPass;
-
-      FocusScope.of(context).requestFocus(FocusNode());
-      if (pass == vPass) {
-        if (result) {
-          if (registerBool) {
-            FocusScope.of(context).requestFocus(FocusNode());
-            await Provider.of<SignUpIn>(context, listen: false).signUP(context);
-            if (Provider.of<UserManage>(context, listen: false).pointer == 0) {
-              Provider.of<FirestoreUni>(context, listen: false).student =
-                  Student(id, name, mail, phone);
-              await Provider.of<FirestoreUni>(context, listen: false)
-                  .setStudent();
+      if (_rFormKey.currentState.validate()) {
+        _rFormKey.currentState.save();
+        FocusScope.of(context).requestFocus(FocusNode());
+        if (pass == vPass) {
+          if (result) {
+            if (registerBool) {
+              FocusScope.of(context).requestFocus(FocusNode());
+              await Provider.of<SignUpIn>(context, listen: false)
+                  .signUP(context, mail, pass, vPass);
+              if (Provider.of<UserManage>(context, listen: false).pointer ==
+                  0) {
+                Provider.of<FirestoreUni>(context, listen: false).student =
+                    Student(id, name, mail, phone);
+                await Provider.of<FirestoreUni>(context, listen: false)
+                    .setStudent();
+              }
+              if (Provider.of<UserManage>(context, listen: false).pointer ==
+                  2) {
+                Provider.of<FirestoreUni>(context, listen: false).faculty =
+                    Faculty(id, name, mail, phone);
+                await Provider.of<FirestoreUni>(context, listen: false)
+                    .setFaculty();
+              }
+              s = Provider.of<SignUpIn>(context, listen: false).getMsg();
+            } else {
+              s = Provider.of<UserManage>(context, listen: false).getName() +
+                  ' already registered.';
             }
-            if (Provider.of<UserManage>(context, listen: false).pointer == 2) {
-              Provider.of<FirestoreUni>(context, listen: false).faculty =
-                  Faculty(id, name, mail, phone);
-              await Provider.of<FirestoreUni>(context, listen: false)
-                  .setFaculty();
-            }
-            s = Provider.of<SignUpIn>(context, listen: false).getMsg();
           } else {
             s = Provider.of<UserManage>(context, listen: false).getName() +
-                ' already registered.';
+                ' Id not found in chosen ' +
+                Provider.of<UserManage>(context, listen: false).getDrop();
           }
         } else {
-          s = Provider.of<UserManage>(context, listen: false).getName() +
-              ' Id not found in chosen ' +
-              Provider.of<UserManage>(context, listen: false).getDrop();
+          Provider.of<UserManage>(context, listen: false).toggle_Load();
+          s = 'Password do not match with Verify password';
         }
-      } else {
-        Provider.of<UserManage>(context, listen: false).toggle_Load();
-        s = 'Password do not match with Verify password';
+        if (s == 'Success') {
+          Provider.of<UserManage>(context, listen: false)
+              .showMyDialog(context, 'Registered', 1);
+          _rFormKey.currentState.reset();
+        } else if (s != null) {
+          Provider.of<UserManage>(context, listen: false)
+              .errorDialog(s, context);
+        }
+        result = false;
+        registerBool = true;
+        Provider.of<UserManage>(context, listen: false).setSelected(null);
       }
-      if (s == 'Success') {
-        Provider.of<UserManage>(context, listen: false)
-            .showMyDialog(context, 'Registered', 1);
-        _rFormKey.currentState.reset();
-      } else if (s != null) {
-        Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
-      }
-      result = false;
-      registerBool = true;
-      Provider.of<UserManage>(context, listen: false).setSelected(null);
     }
 
     final nameField = TextFormField(
@@ -130,7 +133,7 @@ class RegisterScreen extends StatelessWidget {
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
-          _nameFocus.unfocus();
+          _phoneFocus.unfocus();
           FocusScope.of(context).requestFocus(_emailFocus);
         });
 
@@ -372,9 +375,9 @@ class RegisterScreen extends StatelessWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 25,
-        brightness: Brightness.dark,
         title: Center(
             child: Text(
                 Provider.of<UserManage>(context).getName() + ' Registration')),

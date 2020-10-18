@@ -10,6 +10,7 @@ import 'package:uniresys/entities/entities.dart';
 class FirestoreUni extends ChangeNotifier {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String _error;
+  Admin admin;
   Student student;
   Faculty faculty;
   Course course;
@@ -52,6 +53,33 @@ class FirestoreUni extends ChangeNotifier {
         .snapshots()
         .map((snapshot) => snapshot.docs
         .map((doc) => Degree.fromJson(doc.data()))
+        .toList());
+  }
+
+  Stream<List<Student>> getStudent(){
+    return firestore
+        .collection('students')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Student.fromJson(doc.data()))
+        .toList());
+  }
+
+  Stream<List<Faculty>> getFaculty(){
+    return firestore
+        .collection('faculties')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Faculty.fromJson(doc.data()))
+        .toList());
+  }
+
+  Stream<List<Admin>> getAdmin(){
+    return firestore
+        .collection('admins')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Admin.fromJson(doc.data()))
         .toList());
   }
 

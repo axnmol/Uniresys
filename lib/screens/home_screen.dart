@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:uniresys/flutterfire/firestore.dart';
 
 import 'package:uniresys/screens/contact_screen.dart';
 import 'package:uniresys/screens/register_screen.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import 'package:uniresys/flutterfire/fireauth.dart';
 import 'package:uniresys/users.dart';
+import 'package:uniresys/entities/entities.dart';
 
 class HomeScreen extends StatelessWidget {
   static const String id = 'home_screen';
@@ -20,22 +22,25 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String _email, _password = '';
+    String _email, _password;
 
     void login() async {
-      String s;
-      Provider.of<SignUpIn>(context, listen: false).e = _email;
-      Provider.of<SignUpIn>(context, listen: false).p = _password;
-      FocusScope.of(context).requestFocus(FocusNode());
-      await Provider.of<SignUpIn>(context, listen: false).signIn(context);
-      s = Provider.of<SignUpIn>(context, listen: false).getMsg();
-      _passFocus.unfocus();
-      _formKey.currentState.reset();
-      if (s == 'Success') {
-        Provider.of<UserManage>(context, listen: false)
-            .showMyDialog(context, 'Logged In', 1);
-      } else if (s != null) {
-        Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
+      if (_formKey.currentState.validate()) {
+        _formKey.currentState.save();
+        String s;
+        FocusScope.of(context).requestFocus(FocusNode());
+        await Provider.of<SignUpIn>(context, listen: false)
+            .signIn(context, _email, _password);
+        s = Provider.of<SignUpIn>(context, listen: false).getMsg();
+        _passFocus.unfocus();
+        _formKey.currentState.reset();
+        if (s == 'Success') {
+          Provider.of<UserManage>(context, listen: false)
+              .showMyDialog(context, 'Logged In', 1);
+        } else if (s != null) {
+          Provider.of<UserManage>(context, listen: false)
+              .errorDialog(s, context);
+        }
       }
     }
 
@@ -82,19 +87,70 @@ class HomeScreen extends StatelessWidget {
       shadowColor: Colors.blueAccent,
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.blueAccent,
-      child: MaterialButton(
-        minWidth: MediaQuery.of(context).size.width / 3,
-        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        onPressed: () {
-          if (_formKey.currentState.validate()) {
-            _formKey.currentState.save();
-            login();
-          }
-        },
-        child: Text('Sign In',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-      ),
+      child: StreamBuilder<List<Admin>>(
+          stream: Provider.of<FirestoreUni>(context).getAdmin(),
+          builder: (context, snapAdmin) {
+            return StreamBuilder<List<Student>>(
+                stream: Provider.of<FirestoreUni>(context).getStudent(),
+                builder: (context, snapStudent) {
+                  return StreamBuilder<List<Faculty>>(
+                      stream: Provider.of<FirestoreUni>(context).getFaculty(),
+                      builder: (context, snapFaculty) {
+                        if (!snapAdmin.hasData ||
+                            !snapFaculty.hasData ||
+                            !snapFaculty.hasData) {
+                          return Center(
+                            child: SpinKitDoubleBounce(
+                              color: Colors.blueAccent,
+                              size: 150,
+                            ),
+                          );
+                        }
+                        return MaterialButton(
+                          minWidth: MediaQuery.of(context).size.width / 3,
+                          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                          onPressed: () {
+                            print('hoja');
+                            if (_formKey.currentState.validate()) {
+                              _formKey.currentState.save();
+                              var lenA = snapAdmin.data.length;
+                              var lenS = snapStudent.data.length;
+                              var lenF = snapFaculty.data.length;
+                              print(lenA);
+                              print('haha');
+                              for (var i = 0; i < lenA; ++i) {
+                                print('loop');
+                                if (snapAdmin.data[i].Email == _email) {
+                                  print('false');
+                                  Provider.of<FirestoreUni>(context,listen: false).admin = snapAdmin.data[i];
+                                  Provider.of<UserManage>(context,listen: false).setSelect(1);
+                                  break;
+                                }
+                              }
+                              for (var i = 0; i < lenS; ++i) {
+                                if (snapStudent.data[i].Email == _email) {
+                                  Provider.of<FirestoreUni>(context,listen: false).student = snapStudent.data[i];
+                                  Provider.of<UserManage>(context,listen: false).setSelect(0);
+                                }
+                              }
+                              for (var i = 0; i < lenF; ++i) {
+                                if (snapFaculty.data[i].Email == _email) {
+                                  Provider.of<FirestoreUni>(context,listen: false).faculty = snapFaculty.data[i];
+                                  Provider.of<UserManage>(context,listen: false).setSelect(2);
+                                }
+                              }
+                              login();
+                            }
+                          },
+                          child: Text('Sign In',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold)),
+                        );
+                      });
+                });
+          }),
     );
 
     final signUpButton = Material(
@@ -178,6 +234,7 @@ class HomeScreen extends StatelessWidget {
     );
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: LoadingOverlay(
         child: SafeArea(
           child: Padding(
