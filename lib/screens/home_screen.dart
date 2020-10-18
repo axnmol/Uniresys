@@ -110,33 +110,40 @@ class HomeScreen extends StatelessWidget {
                           minWidth: MediaQuery.of(context).size.width / 3,
                           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                           onPressed: () {
-                            print('hoja');
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
                               var lenA = snapAdmin.data.length;
                               var lenS = snapStudent.data.length;
                               var lenF = snapFaculty.data.length;
-                              print(lenA);
-                              print('haha');
                               for (var i = 0; i < lenA; ++i) {
-                                print('loop');
                                 if (snapAdmin.data[i].Email == _email) {
-                                  print('false');
-                                  Provider.of<FirestoreUni>(context,listen: false).admin = snapAdmin.data[i];
-                                  Provider.of<UserManage>(context,listen: false).setSelect(1);
+                                  Provider.of<FirestoreUni>(context,
+                                          listen: false)
+                                      .admin = snapAdmin.data[i];
+                                  Provider.of<UserManage>(context,
+                                          listen: false)
+                                      .setSelect(1);
                                   break;
                                 }
                               }
                               for (var i = 0; i < lenS; ++i) {
                                 if (snapStudent.data[i].Email == _email) {
-                                  Provider.of<FirestoreUni>(context,listen: false).student = snapStudent.data[i];
-                                  Provider.of<UserManage>(context,listen: false).setSelect(0);
+                                  Provider.of<FirestoreUni>(context,
+                                          listen: false)
+                                      .student = snapStudent.data[i];
+                                  Provider.of<UserManage>(context,
+                                          listen: false)
+                                      .setSelect(0);
                                 }
                               }
                               for (var i = 0; i < lenF; ++i) {
                                 if (snapFaculty.data[i].Email == _email) {
-                                  Provider.of<FirestoreUni>(context,listen: false).faculty = snapFaculty.data[i];
-                                  Provider.of<UserManage>(context,listen: false).setSelect(2);
+                                  Provider.of<FirestoreUni>(context,
+                                          listen: false)
+                                      .faculty = snapFaculty.data[i];
+                                  Provider.of<UserManage>(context,
+                                          listen: false)
+                                      .setSelect(2);
                                 }
                               }
                               login();

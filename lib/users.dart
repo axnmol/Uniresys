@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uniresys/screens/admin_screen.dart';
 import 'package:uniresys/screens/profile_screen.dart';
 
 class Users{
@@ -47,7 +48,13 @@ class UserManage extends ChangeNotifier{
                 Navigator.pop(context);
                 Navigator.maybePop(context);
                 if(x==1){
+                  var point = Provider.of<UserManage>(context,listen: false).pointer;
+                  if(point!=1) {
                     Navigator.pushNamed(context, ProfileScreen.id);
+                  }
+                  else{
+                    Navigator.pushNamed(context, AdminScreen.id);
+                  }
                 }
               },
             ),
