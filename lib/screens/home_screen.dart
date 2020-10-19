@@ -88,13 +88,13 @@ class HomeScreen extends StatelessWidget {
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.blueAccent,
       child: StreamBuilder<List<Admin>>(
-          stream: Provider.of<FirestoreUni>(context).getAdmin(),
+          stream: Provider.of<FireStoreUni>(context).getAdmin(),
           builder: (context, snapAdmin) {
             return StreamBuilder<List<Student>>(
-                stream: Provider.of<FirestoreUni>(context).getStudent(),
+                stream: Provider.of<FireStoreUni>(context).getStudent(),
                 builder: (context, snapStudent) {
                   return StreamBuilder<List<Faculty>>(
-                      stream: Provider.of<FirestoreUni>(context).getFaculty(),
+                      stream: Provider.of<FireStoreUni>(context).getFaculty(),
                       builder: (context, snapFaculty) {
                         if (!snapAdmin.hasData ||
                             !snapFaculty.hasData ||
@@ -115,9 +115,12 @@ class HomeScreen extends StatelessWidget {
                               var lenA = snapAdmin.data.length;
                               var lenS = snapStudent.data.length;
                               var lenF = snapFaculty.data.length;
+                              print(_email);
                               for (var i = 0; i < lenA; ++i) {
+                                print(snapAdmin.data[i].Email);
                                 if (snapAdmin.data[i].Email == _email) {
-                                  Provider.of<FirestoreUni>(context,
+                                  print(snapAdmin.data[i].Email);
+                                  Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .admin = snapAdmin.data[i];
                                   Provider.of<UserManage>(context,
@@ -127,8 +130,10 @@ class HomeScreen extends StatelessWidget {
                                 }
                               }
                               for (var i = 0; i < lenS; ++i) {
+                                print(snapStudent.data[i].Email);
                                 if (snapStudent.data[i].Email == _email) {
-                                  Provider.of<FirestoreUni>(context,
+                                  print(snapStudent.data[i].Email);
+                                  Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .student = snapStudent.data[i];
                                   Provider.of<UserManage>(context,
@@ -137,8 +142,10 @@ class HomeScreen extends StatelessWidget {
                                 }
                               }
                               for (var i = 0; i < lenF; ++i) {
+                                print(snapFaculty.data[i].Email);
                                 if (snapFaculty.data[i].Email == _email) {
-                                  Provider.of<FirestoreUni>(context,
+                                  print(snapFaculty.data[i].Email);
+                                  Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .faculty = snapFaculty.data[i];
                                   Provider.of<UserManage>(context,
@@ -204,6 +211,7 @@ class HomeScreen extends StatelessWidget {
     );
 
     final userCategory = Material(
+      color: Colors.white,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[

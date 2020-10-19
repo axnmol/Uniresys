@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:loading_overlay/loading_overlay.dart';
@@ -5,6 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:email_validator/email_validator.dart';
 
+import 'package:uniresys/flutterfire/fireauth.dart';
+import 'package:uniresys/flutterfire/firestore.dart';
+import 'package:uniresys/entities/entities.dart';
 import 'package:uniresys/users.dart';
 
 class UpdateScreen extends StatelessWidget {
@@ -17,12 +21,46 @@ class UpdateScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String mail,phone;
+    var admin = Provider.of<FireStoreUni>(context).admin;
+    var faculty = Provider.of<FireStoreUni>(context).faculty;
+    var student = Provider.of<FireStoreUni>(context).student;
 
-    void update(){
+    void update() async{
+      String s;
       if (_uFormKey.currentState.validate()) {
         _uFormKey.currentState.save();
-        print(mail);
-        print(phone);
+        FocusScope.of(context).requestFocus(FocusNode());
+        Provider.of<UserManage>(context, listen: false).toggle_Load();
+        try {
+          var x = Provider.of<UserManage>(context,listen: false).pointer;
+          var fireStoreUni = Provider.of<FireStoreUni>(context,listen: false);
+          if(x == 0){
+            fireStoreUni.student = Student(student.Id, student.Name, mail, phone);
+            await fireStoreUni.setStudent();
+          }
+          if(x == 2){
+            fireStoreUni.faculty = Faculty(faculty.Id, faculty.Name, mail, phone);
+            await fireStoreUni.setFaculty();
+          }
+          if(x == 1){
+            fireStoreUni.admin = Admin(mail, admin.Name, phone);
+            await fireStoreUni.setAdmin();
+          }
+          await Provider.of<SignUpIn>(context,listen: false).auth.currentUser.updateEmail(mail);
+          s='Successfully Updated';
+
+        } on FirebaseAuthException catch(e){
+          s = e.code.toUpperCase().toString();
+        }
+        if (s == 'Successfully Updated') {
+          Provider.of<UserManage>(context, listen: false)
+              .showMyDialog(context, s, 0);
+          _uFormKey.currentState.reset();
+        } else if(s!=null){
+          Provider.of<UserManage>(context, listen: false)
+              .errorDialog(s, context);
+        }
+        Provider.of<UserManage>(context, listen: false).toggle_Load();
       }
     }
 
@@ -86,6 +124,7 @@ class UpdateScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: Text('Update Information'),
         elevation: 25,
         brightness: Brightness.dark,
@@ -102,7 +141,7 @@ class UpdateScreen extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: FittedBox(
-                      child: Icon(Icons.update_rounded,color: Colors.blueAccent,),
+                      child: Icon(Icons.update_rounded,color: Colors.black54,),
                         fit: BoxFit.contain,
                       ),
                     ),

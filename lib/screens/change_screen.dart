@@ -1,8 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:uniresys/flutterfire/fireauth.dart';
 
 import 'package:uniresys/users.dart';
 
@@ -12,16 +15,50 @@ class ChangeScreen extends StatelessWidget {
   final _cFormKey = GlobalKey<FormState>();
   final FocusNode _passFocus = FocusNode();
   final FocusNode _verifyFocus = FocusNode();
+  final FocusNode _newFocus = FocusNode();
 
   @override
   Widget build(BuildContext context) {
-    String pass, vPass;
+    String pass, newPass, vPass;
 
-    void change() {
+    void change() async {
+      String s;
       if (_cFormKey.currentState.validate()) {
         _cFormKey.currentState.save();
-        print(pass);
-        print(vPass);
+        FocusScope.of(context).requestFocus(FocusNode());
+        Provider.of<UserManage>(context, listen: false).toggle_Load();
+        if (newPass == vPass) {
+          try {
+            var user =
+                Provider.of<SignUpIn>(context, listen: false).auth.currentUser;
+            var credential =
+                EmailAuthProvider.credential(email: user.email, password: pass);
+            var authResult = await Provider.of<SignUpIn>(context, listen: false)
+                .auth
+                .currentUser
+                .reauthenticateWithCredential(credential);
+            if (authResult != null) {
+              await Provider.of<SignUpIn>(context, listen: false)
+                  .auth
+                  .currentUser
+                  .updatePassword(vPass);
+              s = 'Successfully Changed';
+            }
+          } on FirebaseAuthException catch (e) {
+            s = e.code.toUpperCase().toString();
+          }
+        } else {
+          s = 'Passwords do no match';
+        }
+        if (s == 'Successfully Changed') {
+          Provider.of<UserManage>(context, listen: false)
+              .showMyDialog(context, s, 0);
+          _cFormKey.currentState.reset();
+        } else if(s!=null){
+          Provider.of<UserManage>(context, listen: false)
+              .errorDialog(s, context);
+        }
+        Provider.of<UserManage>(context, listen: false).toggle_Load();
       }
     }
 
@@ -52,6 +89,25 @@ class ChangeScreen extends StatelessWidget {
         focusNode: _verifyFocus,
         validator: (input) => input.isEmpty ? 'Required' : null,
         onSaved: (input) => vPass = input,
+        decoration: InputDecoration(
+            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            labelText: 'New Password',
+            suffixIcon: Icon(Icons.lock),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+        onFieldSubmitted: (term) {
+          _verifyFocus.unfocus();
+          FocusScope.of(context).requestFocus(_newFocus);
+        });
+
+    final nPassField = TextFormField(
+        keyboardType: TextInputType.text,
+        obscureText: true,
+        style: TextStyle(),
+        textInputAction: TextInputAction.done,
+        focusNode: _newFocus,
+        validator: (input) => input.isEmpty ? 'Required' : null,
+        onSaved: (input) => newPass = input,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Verify Password',
@@ -85,6 +141,7 @@ class ChangeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         title: Text('Change Password'),
         elevation: 25,
         brightness: Brightness.dark,
@@ -101,13 +158,18 @@ class ChangeScreen extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: FittedBox(
-                      child: Icon(Icons.admin_panel_settings_sharp,color: Colors.blueAccent,),
+                      child: Icon(
+                        Icons.admin_panel_settings_sharp,
+                        color: Colors.black54,
+                      ),
                       fit: BoxFit.contain,
                     ),
                   ),
                   passField,
                   SizedBox(height: 20.0),
                   vPassField,
+                  SizedBox(height: 20.0),
+                  nPassField,
                   SizedBox(height: 20.0),
                   changeButton,
                   SizedBox(height: 20.0),

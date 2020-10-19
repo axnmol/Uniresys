@@ -56,6 +56,10 @@ class SignUpIn extends ChangeNotifier {
     await _error;
   }
 
+  Future signOut() async {
+    await auth.signOut();
+  }
+
   String getMsg(){
     return _error;
   }

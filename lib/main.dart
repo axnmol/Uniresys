@@ -52,8 +52,8 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider<UserManage>(
                 create: (BuildContext context) => UserManage(),
               ),
-              ChangeNotifierProvider<FirestoreUni>(
-                create: (BuildContext context) => FirestoreUni(),
+              ChangeNotifierProvider<FireStoreUni>(
+                create: (BuildContext context) => FireStoreUni(),
               ),
               ChangeNotifierProvider<SignUpIn>(
                 create: (BuildContext context) => SignUpIn(),

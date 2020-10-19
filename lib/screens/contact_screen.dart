@@ -20,9 +20,9 @@ class ContactScreen extends StatelessWidget {
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
         FocusScope.of(context).requestFocus(FocusNode());
-         await Provider.of<FirestoreUni>(context, listen: false)
+         await Provider.of<FireStoreUni>(context, listen: false)
             .addFeed(_feed, context);
-        s = Provider.of<FirestoreUni>(context, listen: false).getMsg();
+        s = Provider.of<FireStoreUni>(context, listen: false).getMsg();
       }
       if (s == 'Success') {
         Provider.of<UserManage>(context, listen: false)
@@ -70,6 +70,7 @@ class ContactScreen extends StatelessWidget {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         elevation: 25,
         title: Text('Contact University'),
       ),

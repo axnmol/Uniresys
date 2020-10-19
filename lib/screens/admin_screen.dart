@@ -33,7 +33,7 @@ class AdminScreen extends StatelessWidget {
         leftChild: null,
         rightChild: Scaffold(
           body: Padding(
-            padding: EdgeInsets.fromLTRB(10, 150, 10, 50),
+            padding: EdgeInsets.fromLTRB(10, 70, 10, 10),
             child: Container(
               width: MediaQuery.of(context).size.width,
               child: Column(
@@ -43,7 +43,7 @@ class AdminScreen extends StatelessWidget {
                   Icon(
                     Icons.contacts_rounded,
                     size: MediaQuery.of(context).size.width / 3,
-                    color: Colors.blueAccent,
+                    color: Colors.black54,
                   ),
                   SizedBox(height: 30),
                   Text(
@@ -73,7 +73,7 @@ class AdminScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: Colors.black54, width: 2),
                     shape: StadiumBorder(),
                   ),
                   SizedBox(height: 20),
@@ -91,7 +91,7 @@ class AdminScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: Colors.black54, width: 2),
                     shape: StadiumBorder(),
                   ),
                   SizedBox(height: 15),
@@ -110,7 +110,7 @@ class AdminScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: Colors.black54, width: 2),
                     shape: StadiumBorder(),
                   ),
                 ],
@@ -122,6 +122,7 @@ class AdminScreen extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.white,
           appBar: AppBar(
+            backgroundColor: Colors.blueAccent,
             leading: Icon(Icons.contacts_outlined,size: 30,),
             title: Center(
               child: Text(Provider.of<UserManage>(context).getName()),

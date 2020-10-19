@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 import 'package:uniresys/entities/entities.dart';
+import 'package:uniresys/flutterfire/fireauth.dart';
+import 'package:uniresys/flutterfire/firestore.dart';
 import 'package:uniresys/screens/change_screen.dart';
 import 'package:uniresys/screens/update_screen.dart';
-
 import 'package:uniresys/users.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -13,6 +16,16 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var x = Provider.of<UserManage>(context).pointer;
+    var student = Provider.of<FireStoreUni>(context).student;
+    var faculty = Provider.of<FireStoreUni>(context).faculty;
+    var button = <String>['Courses', '', 'Students'];
+    var students = <Student>[];
+    var courses = <Course>[];
+
+    Course course;
+    Degree degree;
+
     return WillPopScope(
       onWillPop: () async => false,
       child: InnerDrawer(
@@ -40,7 +53,7 @@ class ProfileScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 100),
-                    if (Provider.of<UserManage>(context).pointer == 1)
+                    if (x == 0)
                       Text(
                         'List of Courses',
                         style: TextStyle(
@@ -48,7 +61,7 @@ class ProfileScreen extends StatelessWidget {
                             color: Colors.blueAccent,
                             fontSize: 30),
                       ),
-                    if (Provider.of<UserManage>(context).pointer == 2)
+                    if (x == 2)
                       Text(
                         'List of Students',
                         style: TextStyle(
@@ -59,7 +72,6 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       height: 15,
                     ),
-                    //listview
                   ],
                 )),
           ),
@@ -67,7 +79,7 @@ class ProfileScreen extends StatelessWidget {
         rightChild: Scaffold(
           backgroundColor: Colors.white,
           body: Padding(
-            padding: EdgeInsets.fromLTRB(10, 150, 10, 50),
+            padding: EdgeInsets.fromLTRB(10, 70, 10, 10),
             child: Container(
               width: MediaQuery.of(context).size.width,
               child: Column(
@@ -77,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                   Icon(
                     Icons.contacts_rounded,
                     size: MediaQuery.of(context).size.width / 3,
-                    color: Colors.blueAccent,
+                    color: Colors.black54,
                   ),
                   SizedBox(height: 30),
                   Text(
@@ -107,7 +119,7 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: Colors.black54, width: 2),
                     shape: StadiumBorder(),
                   ),
                   SizedBox(height: 20),
@@ -125,12 +137,13 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: Colors.black54, width: 2),
                     shape: StadiumBorder(),
                   ),
                   SizedBox(height: 15),
                   OutlineButton(
-                    onPressed: () {
+                    onPressed: () async{
+                      await Provider.of<SignUpIn>(context,listen: false).signOut();
                       Navigator.pop(context);
                       Navigator.pop(context);
                     },
@@ -144,7 +157,7 @@ class ProfileScreen extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                     ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
+                    borderSide: BorderSide(color: Colors.black54, width: 2),
                     shape: StadiumBorder(),
                   ),
                 ],
@@ -156,6 +169,7 @@ class ProfileScreen extends StatelessWidget {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.white,
           appBar: AppBar(
+            backgroundColor: Colors.blueAccent,
             leading: Icon(
               Icons.contacts_outlined,
               size: 30,
@@ -178,92 +192,222 @@ class ProfileScreen extends StatelessWidget {
             brightness: Brightness.dark,
           ),
           body: SafeArea(
-            child: Container(
-              padding: EdgeInsets.all(30),
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Material(
-                    elevation: 10,
-                    shadowColor: Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(50.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(50.0)),
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.width,
-                      child: Padding(
-                        padding: EdgeInsets.all(30.0),
-                        child: Material(
-                          elevation: 10,
-                          shadowColor: Colors.white,
-                          borderRadius: BorderRadius.circular(50.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(25.0)),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.person,
-                                  size: MediaQuery.of(context).size.width / 2.5,
-                                  color: Colors.blueAccent,
+            child: StreamBuilder<List<Course>>(
+                stream: Provider.of<FireStoreUni>(context)
+                    .getCourses(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(
+                      child: SpinKitDoubleBounce(
+                        color: Colors.white,
+                        size: 150,
+                      ),
+                    );
+                  }
+                  if(x==2){
+                  var len = snapshot.data.length;
+                  for(var i = 0; i<len;++i){
+                    if(snapshot.data[i].Faculty_Id==faculty.Id){
+                      course = snapshot.data[i];
+                    }
+                  }}
+                  return Container(
+                  padding: EdgeInsets.all(30),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      if (x == 0)
+                        Text(
+                          'ID : ' + student.Id.toString(),
+                          style: TextStyle(
+                              fontSize: 50,
+                              color: Colors.black54,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 10),
+                        ),
+                      if (x == 2)
+                        Text(
+                          'ID : ' + faculty.Id.toString(),
+                          style: TextStyle(
+                              fontSize: 50,
+                              color: Colors.blueAccent,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 10),
+                        ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Material(
+                        elevation: 10,
+                        shadowColor: Colors.blueAccent,
+                        borderRadius: BorderRadius.circular(50.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blueAccent,
+                              border: Border.all(width: 2, color: Colors.black54),
+                              borderRadius: BorderRadius.circular(50.0)),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width/1,
+                          child: Padding(
+                            padding: EdgeInsets.all(30.0),
+                            child: Material(
+                              elevation: 10,
+                              shadowColor: Colors.white,
+                              borderRadius: BorderRadius.circular(50.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.white54),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(25.0)),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: FittedBox(
+                                        child: Icon(Icons.person,color: Colors.black54,),
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                    if (x == 0)
+                                      Text(student.Name,
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.w600)),
+                                    if (x == 2)
+                                      Text(faculty.Name,
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.w600)),
+                                    SizedBox(height: 10),
+                                    if (x == 0)
+                                      Text(student.Email,
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.w600)),
+                                    if (x == 2)
+                                      Text(faculty.Email,
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.w600)),
+                                    SizedBox(height: 10),
+                                    if (x == 0)
+                                      Text(student.Phone,
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.w600)),
+                                    if (x == 2)
+                                      Text(faculty.Phone,
+                                          style: TextStyle(
+                                              fontSize: 25,
+                                              color: Colors.blueAccent,
+                                              fontWeight: FontWeight.w600)),
+                                    SizedBox(height: 10),
+                                    if (x == 0)
+                                      StreamBuilder<List<Degree>>(
+                                          stream: Provider.of<FireStoreUni>(context)
+                                              .getDegrees(),
+                                          builder: (context, snapshot) {
+                                            if (!snapshot.hasData) {
+                                              return Center(
+                                                child: SpinKitDoubleBounce(
+                                                  color: Colors.white,
+                                                  size: 150,
+                                                ),
+                                              );
+                                            }
+                                            var len = snapshot.data.length;
+                                            for (var i = 0; i < len; ++i) {
+                                              var length = snapshot
+                                                  .data[i].Student_Ids.length;
+                                              for (var j = 0; j < length; ++j) {
+                                                if (snapshot
+                                                        .data[i].Student_Ids[j] ==
+                                                    student.Id) {
+                                                  degree = snapshot.data[i];
+                                                }
+                                              }
+                                            }
+                                            return Text(
+                                              degree.Name,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black54,
+                                                  fontWeight: FontWeight.w600),
+                                            );
+                                          }),
+                                    if (x == 2)
+                                      Text(
+                                        course.Name,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.black54,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                    SizedBox(height: 10,)
+                                  ],
                                 ),
-                                Text('Name',style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.w600
-                                )),
-                                SizedBox(height: 5),
-                                Text('Email',style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.w600
-                                )),
-                                SizedBox(height: 5),
-                                Text('Phone',style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.blueAccent,
-                                    fontWeight: FontWeight.w600
-                                )),
-                                SizedBox(height: 5),
-                                Text('Degree/Course',style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.blueAccent,
-                                  fontWeight: FontWeight.w600
-                                ),),
-                              ],
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  SizedBox(height: 30,),
-                  OutlineButton(
-                    onPressed: () {
-                      _innerDrawerKey.currentState.open(direction: InnerDrawerDirection.start);
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: Text(
-                        'View Students/Courses',
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.blueAccent,
-                            fontWeight: FontWeight.w500),
+                      SizedBox(
+                        height: 20,
                       ),
-                    ),
-                    borderSide: BorderSide(color: Colors.blueAccent, width: 2),
-                    shape: StadiumBorder(),
+                      if (x == 0)
+                        Text(
+                          'Courses enrolled by a student : ',
+                          style: TextStyle(fontSize: 20, color: Colors.black54),
+                        ),
+                      if (x == 0)
+                        SizedBox(
+                          height: 15,
+                        ),
+                      if (x == 2)
+                        Text(
+                          'Students teached by the faculty : ' +
+                              course.Student_Ids.length.toString(),
+                          style: TextStyle(fontSize: 20, color: Colors.black54),
+                        ),
+                      if (x == 0)
+                        Text(
+                          'Credits attained by a student : ',
+                          style: TextStyle(fontSize: 20, color: Colors.black54),
+                        ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      RaisedButton(
+                        color: Colors.blueAccent,
+                        elevation: 10,
+                        onPressed: () {
+                          _innerDrawerKey.currentState
+                              .open(direction: InnerDrawerDirection.start);
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            'View ' + button[x],
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        shape: StadiumBorder(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              }
             ),
           ),
         ),

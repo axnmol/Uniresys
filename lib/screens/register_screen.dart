@@ -61,16 +61,16 @@ class RegisterScreen extends StatelessWidget {
                   .signUP(context, mail, pass, vPass);
               if (Provider.of<UserManage>(context, listen: false).pointer ==
                   0) {
-                Provider.of<FirestoreUni>(context, listen: false).student =
+                Provider.of<FireStoreUni>(context, listen: false).student =
                     Student(id, name, mail, phone);
-                await Provider.of<FirestoreUni>(context, listen: false)
+                await Provider.of<FireStoreUni>(context, listen: false)
                     .setStudent();
               }
               if (Provider.of<UserManage>(context, listen: false).pointer ==
                   2) {
-                Provider.of<FirestoreUni>(context, listen: false).faculty =
+                Provider.of<FireStoreUni>(context, listen: false).faculty =
                     Faculty(id, name, mail, phone);
-                await Provider.of<FirestoreUni>(context, listen: false)
+                await Provider.of<FireStoreUni>(context, listen: false)
                     .setFaculty();
               }
               s = Provider.of<SignUpIn>(context, listen: false).getMsg();
@@ -84,7 +84,6 @@ class RegisterScreen extends StatelessWidget {
                 Provider.of<UserManage>(context, listen: false).getDrop();
           }
         } else {
-          Provider.of<UserManage>(context, listen: false).toggle_Load();
           s = 'Password do not match with Verify password';
         }
         if (s == 'Success') {
@@ -217,7 +216,7 @@ class RegisterScreen extends StatelessWidget {
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.blueAccent,
       child: StreamBuilder<List<Registered>>(
-          stream: Provider.of<FirestoreUni>(context).getRegistered(),
+          stream: Provider.of<FireStoreUni>(context).getRegistered(),
           builder: (context, snap) {
             if (!snap.hasData) {
               return Center(
@@ -256,7 +255,7 @@ class RegisterScreen extends StatelessWidget {
       shadowColor: Colors.blueAccent,
       borderRadius: BorderRadius.circular(30),
       child: StreamBuilder<List<Course>>(
-          stream: Provider.of<FirestoreUni>(context).getCourses(),
+          stream: Provider.of<FireStoreUni>(context).getCourses(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -316,7 +315,7 @@ class RegisterScreen extends StatelessWidget {
       shadowColor: Colors.blueAccent,
       borderRadius: BorderRadius.circular(30),
       child: StreamBuilder<List<Degree>>(
-          stream: Provider.of<FirestoreUni>(context).getDegrees(),
+          stream: Provider.of<FireStoreUni>(context).getDegrees(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -377,6 +376,7 @@ class RegisterScreen extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.blueAccent,
         elevation: 25,
         title: Center(
             child: Text(

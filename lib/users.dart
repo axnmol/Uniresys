@@ -21,6 +21,10 @@ class UserManage extends ChangeNotifier{
 
   void showMyDialog(BuildContext context,String str,int x) {
     dynamic msg;
+    // For null
+    if(x==0){
+      msg = str;
+    }
     // For Sign In and Sign Up
     if(x==1) {
       msg = _users[pointer].name + ' Successfully '+str;
@@ -40,7 +44,7 @@ class UserManage extends ChangeNotifier{
             'Successful',
             textAlign: TextAlign.center,
           ),
-          content: Text(msg.toString()),
+          content: Text(msg.toString(),textAlign: TextAlign.center,),
           actions: <Widget>[
             FlatButton(
               child: Text('OK'),

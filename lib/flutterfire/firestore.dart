@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'package:uniresys/users.dart';
 import 'package:uniresys/entities/entities.dart';
 
-class FirestoreUni extends ChangeNotifier {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+class FireStoreUni extends ChangeNotifier {
+  final FirebaseFirestore fireStore = FirebaseFirestore.instance;
   String _error;
   Admin admin;
   Student student;
@@ -19,7 +19,7 @@ class FirestoreUni extends ChangeNotifier {
 
   Future addFeed(String str, BuildContext context) async{
     Provider.of<UserManage>(context, listen: false).toggle_Load();
-    await firestore
+    await fireStore
         .collection('feedbacks')
         .add(<String, dynamic>{
           'Feedback': str,
@@ -30,7 +30,7 @@ class FirestoreUni extends ChangeNotifier {
   }
 
   Stream<List<Registered>> getRegistered(){
-    return firestore
+    return fireStore
         .collection('registered')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -39,7 +39,7 @@ class FirestoreUni extends ChangeNotifier {
   }
 
   Stream<List<Course>> getCourses(){
-    return firestore
+    return fireStore
         .collection('courses')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -48,7 +48,7 @@ class FirestoreUni extends ChangeNotifier {
   }
 
   Stream<List<Degree>> getDegrees(){
-    return firestore
+    return fireStore
         .collection('degrees')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -57,7 +57,7 @@ class FirestoreUni extends ChangeNotifier {
   }
 
   Stream<List<Student>> getStudent(){
-    return firestore
+    return fireStore
         .collection('students')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -66,7 +66,7 @@ class FirestoreUni extends ChangeNotifier {
   }
 
   Stream<List<Faculty>> getFaculty(){
-    return firestore
+    return fireStore
         .collection('faculties')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -75,7 +75,7 @@ class FirestoreUni extends ChangeNotifier {
   }
 
   Stream<List<Admin>> getAdmin(){
-    return firestore
+    return fireStore
         .collection('admins')
         .snapshots()
         .map((snapshot) => snapshot.docs
@@ -85,7 +85,7 @@ class FirestoreUni extends ChangeNotifier {
 
   Future<void> setStudent(){
     var options = SetOptions(merge:true);
-    return firestore
+    return fireStore
         .collection('students')
         .doc(student.Id.toString())
         .set(student.toMap(),options);
@@ -93,14 +93,22 @@ class FirestoreUni extends ChangeNotifier {
 
   Future<void> setFaculty(){
     var options = SetOptions(merge:true);
-    return firestore
+    return fireStore
         .collection('faculties')
         .doc(faculty.Id.toString())
         .set(faculty.toMap(),options);
   }
 
+  Future<void> setAdmin(){
+    var options = SetOptions(merge:true);
+    return fireStore
+        .collection('admins')
+        .doc(admin.Email.toString())
+        .set(admin.toMap(),options);
+  }
+
   Future<void> removeDegree(String degreeId){
-    return firestore
+    return fireStore
         .collection('degrees')
         .doc(degreeId)
         .delete();
