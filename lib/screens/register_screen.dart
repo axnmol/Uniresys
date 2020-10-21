@@ -73,6 +73,9 @@ class RegisterScreen extends StatelessWidget {
                 await Provider.of<FireStoreUni>(context, listen: false)
                     .setFaculty();
               }
+              Provider.of<FireStoreUni>(context, listen: false).registered =
+                  Registered(id);
+              await Provider.of<FireStoreUni>(context,listen: false).setRegistered();
               s = Provider.of<SignUpIn>(context, listen: false).getMsg();
             } else {
               s = Provider.of<UserManage>(context, listen: false).getName() +

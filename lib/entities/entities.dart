@@ -17,9 +17,9 @@ class Registered{
 }
 
 class Admin{
-  final String Email;
-  final String Name;
-  final String Phone;
+  String Email;
+  String Name;
+  String Phone;
 
   Admin(this.Email,this.Name,this.Phone);
 
@@ -81,7 +81,7 @@ class Course{
         json['Faculty Id'],
         json['Credits'],
         json['Seats'],
-        json['Student Ids']
+        json['Student Ids'].cast<int>()
     );
   }
 
@@ -98,10 +98,10 @@ class Course{
 }
 
 class Student{
-  final int Id;
-  final String Name;
-  final String Email;
-  final String Phone;
+  int Id;
+  String Name;
+  String Email;
+  String Phone;
 
   Student(this.Id,this.Name,this.Email,this.Phone);
 
@@ -125,10 +125,10 @@ class Student{
 }
 
 class Faculty{
-  final int Id;
-  final String Name;
-  final String Email;
-  final String Phone;
+  int Id;
+  String Name;
+  String Email;
+  String Phone;
 
   Faculty(this.Id,this.Name,this.Email,this.Phone);
 

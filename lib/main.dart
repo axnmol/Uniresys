@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:uniresys/admin.dart';
 import 'package:uniresys/screens/admin_screen.dart';
 
 import 'package:uniresys/screens/change_screen.dart';
@@ -57,6 +58,9 @@ class MyApp extends StatelessWidget {
               ),
               ChangeNotifierProvider<SignUpIn>(
                 create: (BuildContext context) => SignUpIn(),
+              ),
+              ChangeNotifierProvider<AdminManage>(
+                create: (BuildContext context) => AdminManage(),
               ),
             ],
             child: MaterialApp(

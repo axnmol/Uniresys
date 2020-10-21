@@ -52,6 +52,9 @@ class UserManage extends ChangeNotifier{
                 Navigator.pop(context);
                 Navigator.maybePop(context);
                 if(x==1){
+                  if(str == 'Registered'){
+                    Navigator.pop(context);
+                  }
                   var point = Provider.of<UserManage>(context,listen: false).pointer;
                   if(point!=1) {
                     Navigator.pushNamed(context, ProfileScreen.id);

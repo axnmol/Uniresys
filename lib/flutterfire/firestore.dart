@@ -9,6 +9,8 @@ import 'package:uniresys/entities/entities.dart';
 
 class FireStoreUni extends ChangeNotifier {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
+  var students = <Student>[];
+  var courses = <Course>[];
   String _error;
   Admin admin;
   Student student;
@@ -47,6 +49,16 @@ class FireStoreUni extends ChangeNotifier {
         .toList());
   }
 
+  Stream<List<Course>> getCoursesStudents(int x){
+    return fireStore
+        .collection('courses')
+    .where('Student Ids',arrayContains: x)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Course.fromJson(doc.data()))
+        .toList());
+  }
+
   Stream<List<Degree>> getDegrees(){
     return fireStore
         .collection('degrees')
@@ -59,6 +71,16 @@ class FireStoreUni extends ChangeNotifier {
   Stream<List<Student>> getStudent(){
     return fireStore
         .collection('students')
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => Student.fromJson(doc.data()))
+        .toList());
+  }
+
+  Stream<List<Student>> getStudentFaculty(List<int> x){
+    return fireStore
+        .collection('students')
+    .where('Id',whereIn: x )
         .snapshots()
         .map((snapshot) => snapshot.docs
         .map((doc) => Student.fromJson(doc.data()))
@@ -105,6 +127,14 @@ class FireStoreUni extends ChangeNotifier {
         .collection('admins')
         .doc(admin.Email.toString())
         .set(admin.toMap(),options);
+  }
+
+  Future<void> setRegistered(){
+    var options = SetOptions(merge:true);
+    return fireStore
+        .collection('registered')
+        .doc(registered.Id.toString())
+        .set(registered.toMap(),options);
   }
 
   Future<void> removeDegree(String degreeId){

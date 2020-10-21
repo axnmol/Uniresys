@@ -115,11 +115,9 @@ class HomeScreen extends StatelessWidget {
                               var lenA = snapAdmin.data.length;
                               var lenS = snapStudent.data.length;
                               var lenF = snapFaculty.data.length;
-                              print(_email);
                               for (var i = 0; i < lenA; ++i) {
                                 print(snapAdmin.data[i].Email);
                                 if (snapAdmin.data[i].Email == _email) {
-                                  print(snapAdmin.data[i].Email);
                                   Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .admin = snapAdmin.data[i];
@@ -132,7 +130,6 @@ class HomeScreen extends StatelessWidget {
                               for (var i = 0; i < lenS; ++i) {
                                 print(snapStudent.data[i].Email);
                                 if (snapStudent.data[i].Email == _email) {
-                                  print(snapStudent.data[i].Email);
                                   Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .student = snapStudent.data[i];
@@ -144,7 +141,6 @@ class HomeScreen extends StatelessWidget {
                               for (var i = 0; i < lenF; ++i) {
                                 print(snapFaculty.data[i].Email);
                                 if (snapFaculty.data[i].Email == _email) {
-                                  print(snapFaculty.data[i].Email);
                                   Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .faculty = snapFaculty.data[i];
@@ -192,6 +188,7 @@ class HomeScreen extends StatelessWidget {
     );
 
     final contactUni = Material(
+      color: Colors.white,
       child: RichText(
         text: TextSpan(
           style: TextStyle(color: Colors.grey, fontSize: 20),
