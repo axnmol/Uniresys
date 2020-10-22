@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:uniresys/screens/admin_screen.dart';
 
 class AdminManage extends ChangeNotifier{
  int maintainSelect = 4;

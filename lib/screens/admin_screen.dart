@@ -1,7 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:loading_overlay/loading_overlay.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_inner_drawer/inner_drawer.dart';
 import 'package:flutter_keyboard_size/flutter_keyboard_size.dart';
@@ -23,11 +23,27 @@ class AdminScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var fireStoreUni = Provider.of<FireStoreUni>(context);
     var adminManage = Provider.of<AdminManage>(context);
+    var userManage = Provider.of<UserManage>(context);
+
+    var courses = <Course>[];
+    var degrees = <Degree>[];
+    var faculties = <Faculty>[];
+    var students = <Student>[];
 
     int id;
 
     void handle(){
-      _innerDrawerKey.currentState.open(direction: InnerDrawerDirection.start);
+      userManage.toggle_Load();
+      if(adminManage.crudSelect!=0) {
+        if (_idFormKey.currentState.validate()) {
+          _idFormKey.currentState.save();
+          _innerDrawerKey.currentState.open(direction: InnerDrawerDirection.start);
+        }
+      }
+      else{
+        _innerDrawerKey.currentState.open(direction: InnerDrawerDirection.start);
+      }
+      userManage.toggle_Load();
     }
 
     final idField = TextFormField(
@@ -52,19 +68,40 @@ class AdminScreen extends StatelessWidget {
         shadowColor: Colors.blueAccent,
         borderRadius: BorderRadius.circular(30.0),
         color: Colors.blueAccent,
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width / 3,
-          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          onPressed: () {
-            if (_idFormKey.currentState.validate()) {
-              _idFormKey.currentState.save();
-
+        child: StreamBuilder<List<Course>>(
+            stream: fireStoreUni.getCourses(),
+            builder: (context, snapCourse) {
+              return StreamBuilder<List<Degree>>(
+                  stream: fireStoreUni.getDegrees(),
+                  builder: (context, snapDegree) {
+                    return StreamBuilder<List<Faculty>>(
+                        stream: fireStoreUni.getFaculty(),
+                        builder: (context, snapFaculty) {
+                          return StreamBuilder<List<Student>>(
+                              stream: fireStoreUni.getStudent(),
+                              builder: (context, snapStudent) {
+                                return MaterialButton(
+                                  minWidth: MediaQuery.of(context).size.width / 3,
+                                  padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                  onPressed: () async{
+                                    courses = await snapCourse.data;
+                                    degrees = await snapDegree.data;
+                                    faculties = await snapFaculty.data;
+                                    students = await snapStudent.data;
+                                    handle();
+                                  },
+                                  child: Text(adminManage.action[adminManage.crudSelect]+'  '+adminManage.maintain[adminManage.maintainSelect],
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.white, fontWeight: FontWeight.bold)),
+                                );
+                              }
+                          );
+                        }
+                    );
+                  }
+              );
             }
-          },
-          child: Text(adminManage.action[adminManage.crudSelect]+'  '+adminManage.maintain[adminManage.maintainSelect],
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold)),
         )
     );
 
@@ -199,402 +236,415 @@ class AdminScreen extends StatelessWidget {
               elevation: 25,
               brightness: Brightness.dark,
             ),
-            body: SafeArea(
+            body: LoadingOverlay(
+              child: SafeArea(
                 child: SingleChildScrollView(
                   reverse: true,
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    fireStoreUni.admin.Name,
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black54,
-                        letterSpacing: 5),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: Column(
                     children: <Widget>[
-                      Icon(
-                        Icons.mail,
-                        color: Colors.blueAccent,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
                       Text(
-                        fireStoreUni.admin.Email,
+                        fireStoreUni.admin.Name,
                         style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 40,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black54),
+                            color: Colors.black54,
+                            letterSpacing: 5),
                       ),
                       SizedBox(
-                        width: 30,
+                        height: 15,
                       ),
-                      Icon(
-                        Icons.phone,
-                        color: Colors.blueAccent,
-                      ),
-                      SizedBox(
-                        width: 5,
-                      ),
-                      Text(
-                        fireStoreUni.admin.Phone,
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black54),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          adminManage..setMSelect(0);
-                        },
-                        child: Material(
-                          elevation: 10,
-                          shadowColor: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: adminManage.getColorM(0),
-                                border:
-                                    Border.all(width: 2, color: Colors.black54),
-                                borderRadius: BorderRadius.circular(20.0)),
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Material(
-                                elevation: 10,
-                                shadowColor: Colors.white,
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 2, color: Colors.black54),
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.person_outlined,
-                                        color: Colors.black54,
-                                      ),
-                                      Text('Maintain',
-                                          style: TextStyle(
-                                              color: Colors.blueAccent,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w600)),
-                                      Text('Student Records',
-                                          style: TextStyle(
-                                              color: Colors.black54,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.mail,
+                            color: Colors.blueAccent,
                           ),
-                        ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            fireStoreUni.admin.Email,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                          ),
+                          SizedBox(
+                            width: 30,
+                          ),
+                          Icon(
+                            Icons.phone,
+                            color: Colors.blueAccent,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            fireStoreUni.admin.Phone,
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54),
+                          )
+                        ],
                       ),
                       SizedBox(
-                        width: 25,
+                        height: 20,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          adminManage.setMSelect(1);
-                        },
-                        child: Material(
-                          elevation: 10,
-                          shadowColor: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: adminManage.getColorM(1),
-                                border:
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              adminManage..setMSelect(0);
+                            },
+                            child: Material(
+                              elevation: 10,
+                              shadowColor: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: adminManage.getColorM(0),
+                                    border:
                                     Border.all(width: 2, color: Colors.black54),
-                                borderRadius: BorderRadius.circular(20.0)),
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Material(
-                                elevation: 10,
-                                shadowColor: Colors.white,
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 2, color: Colors.black54),
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.person_outlined,
-                                        color: Colors.black54,
-                                      ),
-                                      Text(
-                                        'Maintain',
-                                        style: TextStyle(
-                                            color: Colors.blueAccent,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                        'Faculty Records',
-                                        style: TextStyle(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.width / 4,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Material(
+                                    elevation: 10,
+                                    shadowColor: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2, color: Colors.black54),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10.0)),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.person_outlined,
                                             color: Colors.black54,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16),
-                                      )
-                                    ],
+                                          ),
+                                          Text('Maintain',
+                                              style: TextStyle(
+                                                  color: Colors.blueAccent,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600)),
+                                          Text('Student Records',
+                                              style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16))
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      GestureDetector(
-                        onTap: () {
-                          adminManage.setMSelect(2);
-                        },
-                        child: Material(
-                          elevation: 10,
-                          shadowColor: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: adminManage.getColorM(2),
-                                border:
-                                    Border.all(width: 2, color: Colors.black54),
-                                borderRadius: BorderRadius.circular(20.0)),
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Material(
-                                elevation: 10,
-                                shadowColor: Colors.white,
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 2, color: Colors.black54),
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.book_outlined,
-                                        color: Colors.black54,
-                                      ),
-                                      Text('Maintain',
-                                          style: TextStyle(
-                                              color: Colors.blueAccent,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w600)),
-                                      Text('Degree Records',
-                                          style: TextStyle(
-                                              color: Colors.black54,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16))
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
+                          SizedBox(
+                            width: 25,
                           ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 25,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          adminManage.setMSelect(3);
-                        },
-                        child: Material(
-                          elevation: 10,
-                          shadowColor: Colors.blueAccent,
-                          borderRadius: BorderRadius.circular(20.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: adminManage.getColorM(3),
-                                border:
+                          GestureDetector(
+                            onTap: () {
+                              adminManage.setMSelect(1);
+                            },
+                            child: Material(
+                              elevation: 10,
+                              shadowColor: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: adminManage.getColorM(1),
+                                    border:
                                     Border.all(width: 2, color: Colors.black54),
-                                borderRadius: BorderRadius.circular(20.0)),
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 4,
-                            child: Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Material(
-                                elevation: 10,
-                                shadowColor: Colors.white,
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 2, color: Colors.black54),
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.book_outlined,
-                                        color: Colors.black54,
-                                      ),
-                                      Text(
-                                        'Maintain',
-                                        style: TextStyle(
-                                            color: Colors.blueAccent,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                        'Course Records',
-                                        style: TextStyle(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.width / 4,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Material(
+                                    elevation: 10,
+                                    shadowColor: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2, color: Colors.black54),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10.0)),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.person_outlined,
                                             color: Colors.black54,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16),
-                                      )
-                                    ],
+                                          ),
+                                          Text(
+                                            'Maintain',
+                                            style: TextStyle(
+                                                color: Colors.blueAccent,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          Text(
+                                            'Faculty Records',
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16),
+                                          )
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      if(adminManage.maintainSelect==2||adminManage.maintainSelect==3)
-                        OutlineButton(
-                        onPressed: () {adminManage.setCSelect(0);},
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          child: Text(
-                            adminManage.action[0],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.blueAccent,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        borderSide: BorderSide(color: adminManage.getColorC(0), width: 5),
-                        shape: StadiumBorder(),
-                      ),
-                      if(adminManage.maintainSelect==2||adminManage.maintainSelect==3)
-                        SizedBox(
-                        width: 40,
-                      ),
-                      OutlineButton(
-                        onPressed: () {adminManage.setCSelect(1);},
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          child: Text(
-                            adminManage.action[1],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.blueAccent,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        borderSide: BorderSide(color: adminManage.getColorC(1), width: 5),
-                        shape: StadiumBorder(),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      OutlineButton(
-                        onPressed: () {adminManage.setCSelect(2);},
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          child: Text(
-                            adminManage.action[2],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.blueAccent,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        borderSide: BorderSide(color: adminManage.getColorC(2), width: 5),
-                        shape: StadiumBorder(),
+                        ],
                       ),
                       SizedBox(
-                        width: 40,
+                        height: 25,
                       ),
-                      OutlineButton(
-                        onPressed: () {adminManage.setCSelect(3);},
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          child: Text(
-                            adminManage.action[3],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.blueAccent,
-                                fontWeight: FontWeight.w500),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              adminManage.setMSelect(2);
+                            },
+                            child: Material(
+                              elevation: 10,
+                              shadowColor: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: adminManage.getColorM(2),
+                                    border:
+                                    Border.all(width: 2, color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.width / 4,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Material(
+                                    elevation: 10,
+                                    shadowColor: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2, color: Colors.black54),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10.0)),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.book_outlined,
+                                            color: Colors.black54,
+                                          ),
+                                          Text('Maintain',
+                                              style: TextStyle(
+                                                  color: Colors.blueAccent,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w600)),
+                                          Text('Degree Records',
+                                              style: TextStyle(
+                                                  color: Colors.black54,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16))
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        ),
-                        borderSide: BorderSide(color: adminManage.getColorC(3), width: 5),
-                        shape: StadiumBorder(),
+                          SizedBox(
+                            width: 25,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              adminManage.setMSelect(3);
+                            },
+                            child: Material(
+                              elevation: 10,
+                              shadowColor: Colors.blueAccent,
+                              borderRadius: BorderRadius.circular(20.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: adminManage.getColorM(3),
+                                    border:
+                                    Border.all(width: 2, color: Colors.black54),
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                width: MediaQuery.of(context).size.width / 2.5,
+                                height: MediaQuery.of(context).size.width / 4,
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Material(
+                                    elevation: 10,
+                                    shadowColor: Colors.white,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 2, color: Colors.black54),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(10.0)),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.book_outlined,
+                                            color: Colors.black54,
+                                          ),
+                                          Text(
+                                            'Maintain',
+                                            style: TextStyle(
+                                                color: Colors.blueAccent,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          Text(
+                                            'Course Records',
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          if(adminManage.maintainSelect==2||adminManage.maintainSelect==3)
+                            OutlineButton(
+                              onPressed: () {adminManage.setCSelect(0);},
+                              child: Container(
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                child: Text(
+                                  adminManage.action[0],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.blueAccent,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              borderSide: BorderSide(color: adminManage.getColorC(0), width: 5),
+                              shape: StadiumBorder(),
+                            ),
+                          if(adminManage.maintainSelect==2||adminManage.maintainSelect==3)
+                            SizedBox(
+                              width: 40,
+                            ),
+                          OutlineButton(
+                            onPressed: () {adminManage.setCSelect(1);},
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              child: Text(
+                                adminManage.action[1],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            borderSide: BorderSide(color: adminManage.getColorC(1), width: 5),
+                            shape: StadiumBorder(),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          OutlineButton(
+                            onPressed: () {adminManage.setCSelect(2);},
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              child: Text(
+                                adminManage.action[2],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            borderSide: BorderSide(color: adminManage.getColorC(2), width: 5),
+                            shape: StadiumBorder(),
+                          ),
+                          SizedBox(
+                            width: 40,
+                          ),
+                          OutlineButton(
+                            onPressed: () {adminManage.setCSelect(3);},
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              child: Text(
+                                adminManage.action[3],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.blueAccent,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            borderSide: BorderSide(color: adminManage.getColorC(3), width: 5),
+                            shape: StadiumBorder(),
+                          ),
+                        ],
+                      ),
+                      if(adminManage.crudSelect!=0)
+                        Padding(
+                          padding: const EdgeInsets.all(30.0),
+                          child: Form(key: _idFormKey,child: idField),
+                        ),
+                      if(adminManage.crudSelect==0)
+                        SizedBox(height: 20,),
+                      if(adminManage.crudSelect!=4&&adminManage.maintainSelect!=4&&!(adminManage.crudSelect==0&&adminManage.maintainSelect==0)&&!(adminManage.crudSelect==0&&adminManage.maintainSelect==1))defaultButton,
+                      Consumer<ScreenHeight>( builder: (context, _res, child) { return Container( height:  _res.keyboardHeight);})
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(30.0),
-                    child: Form(key: _idFormKey,child: idField),
-                  ),
-                  if(adminManage.crudSelect!=4&&adminManage.maintainSelect!=4&&!(adminManage.crudSelect==0&&adminManage.maintainSelect==0)&&!(adminManage.crudSelect==0&&adminManage.maintainSelect==1))defaultButton,
-                  Consumer<ScreenHeight>( builder: (context, _res, child) { return Container( height:  _res.keyboardHeight);})
-                ],
+                ),
               ),
-            )),
+              isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
+              opacity: 0.5,
+              progressIndicator: SpinKitDoubleBounce(
+                color: Colors.white,
+                size: 150,
+              ),
+              color: Colors.blueAccent,
+            ),
           ),
         ),
       ),
@@ -603,5 +653,5 @@ class AdminScreen extends StatelessWidget {
 
   //  Current State of InnerDrawerState
   final GlobalKey<InnerDrawerState> _innerDrawerKey =
-      GlobalKey<InnerDrawerState>();
+  GlobalKey<InnerDrawerState>();
 }

@@ -118,6 +118,7 @@ class HomeScreen extends StatelessWidget {
                               for (var i = 0; i < lenA; ++i) {
                                 print(snapAdmin.data[i].Email);
                                 if (snapAdmin.data[i].Email == _email) {
+                                  print('admin');
                                   Provider.of<FireStoreUni>(context,
                                           listen: false)
                                       .admin = snapAdmin.data[i];
