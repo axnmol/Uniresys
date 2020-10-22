@@ -32,11 +32,11 @@ class AdminScreen extends StatelessWidget {
 
     int id;
 
-    void handle(){
+    void handle() async{
       userManage.toggle_Load();
       if(adminManage.crudSelect!=0) {
-        if (_idFormKey.currentState.validate()) {
-          _idFormKey.currentState.save();
+        if (await _idFormKey.currentState.validate()) {
+          await _idFormKey.currentState.save();
           _innerDrawerKey.currentState.open(direction: InnerDrawerDirection.start);
         }
       }
@@ -123,6 +123,7 @@ class AdminScreen extends StatelessWidget {
         //innerDrawerCallback: return  true (open) or false (close)
         leftChild: null,
         rightChild: Scaffold(
+          backgroundColor: Colors.white,
           body: Padding(
             padding: EdgeInsets.fromLTRB(10, 70, 10, 10),
             child: Container(

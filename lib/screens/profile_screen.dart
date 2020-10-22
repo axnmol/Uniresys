@@ -49,216 +49,218 @@ class ProfileScreen extends StatelessWidget {
         //innerDrawerCallback: return  true (open) or false (close)
         leftChild: Scaffold(
           backgroundColor: Colors.white,
-          body: Container(
-            padding: EdgeInsets.fromLTRB(10, 50, 10, 0),
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 100),
-                  if (x == 0)
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          'List of Courses',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black54,
-                              fontSize: 40),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(30))
+          body: SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(10, 50, 10, 0),
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    SizedBox(height: 100),
+                    if (x == 0)
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            'List of Courses',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black54,
+                                fontSize: 40),
                           ),
-                          height: MediaQuery.of(context).size.height/1.4,
-                          child: NotificationListener<OverscrollIndicatorNotification>(
-                            // ignore: missing_return
-                            onNotification: (overScroll) {
-                              overScroll.disallowGlow();
-                            },
-                            child: ListView.builder(
-                                physics: BouncingScrollPhysics(),
-                                itemCount: Provider.of<FireStoreUni>(context).courses.length,
-                                itemBuilder: (BuildContext context,int index){
-                                  return ListTile(
-                                    leading: Padding(
-                                      padding: const EdgeInsets.fromLTRB(0,15,0,0),
-                                      child: Icon(Icons.book,size: 50,),
-                                    ),
-                                    title: Align(
-                                      alignment: Alignment(-1.1,0),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5),
-                                        child: Material(
-                                          color: Colors.blueAccent.withOpacity(0.75),
-                                          elevation: 10,
-                                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 15),
-                                            width: MediaQuery.of(context).size.width/1.5,
-                                            height: MediaQuery.of(context).size.height/8,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text( Provider.of<FireStoreUni>(context).courses[index].Id.toString(),
-                                                  style: TextStyle(
-                                                      color: Colors.black54,
-                                                      fontWeight: FontWeight.w800,
-                                                      fontSize: 15
-                                                  ),),
-                                                Text( Provider.of<FireStoreUni>(context).courses[index].Name,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.w800,
-                                                      fontSize: 20
-                                                  ),),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Text('Credits -',style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.w500),),
-                                                    SizedBox(width: 10,),
-                                                    Text(Provider.of<FireStoreUni>(context).courses[index].Credits.toString(),style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 15
-                                                    ),),
-                                                    SizedBox(width: 30,),
-                                                    Text('Seats -',style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.w500),),
-                                                    SizedBox(width: 10,),
-                                                    Text(Provider.of<FireStoreUni>(context).courses[index].Seats.toString(),style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 15
-                                                    ),),
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Text('Faculty ID -',style: TextStyle(fontSize: 18,color: Colors.white,fontWeight: FontWeight.w500),),
-                                                    SizedBox(width: 10,),
-                                                    Text(Provider.of<FireStoreUni>(context).courses[index].Faculty_Id.toString(),style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 18
-                                                    ),),
-
-                                                  ],
-                                                )
-
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                }
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(30))
                             ),
-                          ),
-                        ),
-                      ]
-                    ),
-                  if (x == 2)
-                    Column(
-                      children: <Widget>[
-                        Text(
-                          'List of Students',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black54,
-                              fontSize: 40),
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(30))
-                          ),
-                          height: MediaQuery.of(context).size.height/1.4,
-                          child: NotificationListener<OverscrollIndicatorNotification>(
+                            height: MediaQuery.of(context).size.height/1.4,
+                            child: NotificationListener<OverscrollIndicatorNotification>(
                               // ignore: missing_return
                               onNotification: (overScroll) {
                                 overScroll.disallowGlow();
                               },
-                            child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                                itemCount: Provider.of<FireStoreUni>(context).students.length,
-                                itemBuilder: (BuildContext context,int index){
-                                  return ListTile(
-                                    leading: Padding(
-                                      padding: const EdgeInsets.fromLTRB(0,8,0,0),
-                                      child: Icon(Icons.person,size: 50,),
-                                    ),
-                                    title: Align(
-                                      alignment: Alignment(-1.1,0),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 5),
-                                        child: Material(
-                                          color: Colors.blueAccent.withOpacity(0.75),
-                                          elevation: 10,
-                                          borderRadius: BorderRadius.all(Radius.circular(30)),
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 15),
-                                            width: MediaQuery.of(context).size.width/1.5,
-                                            height: MediaQuery.of(context).size.height/10,
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text( Provider.of<FireStoreUni>(context).students[index].Name+' - '+Provider.of<FireStoreUni>(context).students[index].Id.toString(),
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w800,
-                                                  fontSize: 20
-                                                ),),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Icon(Icons.phone,color: Colors.white,size: 15,),
-                                                    SizedBox(width: 10,),
-                                                    Text(Provider.of<FireStoreUni>(context).students[index].Phone,style: TextStyle(
-                                                      color: Colors.black54,
-                                                        fontWeight: FontWeight.w500,
-                                                        fontSize: 15
-                                                    ),)
-
-                                                  ],
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Icon(Icons.mail,color: Colors.white,size: 15,),
-                                                    SizedBox(width: 10,),
-                                                    Text(Provider.of<FireStoreUni>(context).students[index].Email,style: TextStyle(
+                              child: ListView.builder(
+                                  physics: BouncingScrollPhysics(),
+                                  itemCount: Provider.of<FireStoreUni>(context).courses.length,
+                                  itemBuilder: (BuildContext context,int index){
+                                    return ListTile(
+                                      leading: Padding(
+                                        padding: const EdgeInsets.fromLTRB(0,15,0,0),
+                                        child: Icon(Icons.book,size: 50,),
+                                      ),
+                                      title: Align(
+                                        alignment: Alignment(-1.1,0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Material(
+                                            color: Colors.blueAccent.withOpacity(0.75),
+                                            elevation: 10,
+                                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 15),
+                                              width: MediaQuery.of(context).size.width/1.5,
+                                              height: MediaQuery.of(context).size.height/8,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text( Provider.of<FireStoreUni>(context).courses[index].Id.toString(),
+                                                    style: TextStyle(
                                                         color: Colors.black54,
-                                                        fontWeight: FontWeight.w500,
+                                                        fontWeight: FontWeight.w800,
                                                         fontSize: 15
                                                     ),),
+                                                  Text( Provider.of<FireStoreUni>(context).courses[index].Name,
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.w800,
+                                                        fontSize: 20
+                                                    ),),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Text('Credits -',style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.w500),),
+                                                      SizedBox(width: 10,),
+                                                      Text(Provider.of<FireStoreUni>(context).courses[index].Credits.toString(),style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 15
+                                                      ),),
+                                                      SizedBox(width: 30,),
+                                                      Text('Seats -',style: TextStyle(fontSize: 15,color: Colors.white,fontWeight: FontWeight.w500),),
+                                                      SizedBox(width: 10,),
+                                                      Text(Provider.of<FireStoreUni>(context).courses[index].Seats.toString(),style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 15
+                                                      ),),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Text('Faculty ID -',style: TextStyle(fontSize: 18,color: Colors.white,fontWeight: FontWeight.w500),),
+                                                      SizedBox(width: 10,),
+                                                      Text(Provider.of<FireStoreUni>(context).courses[index].Faculty_Id.toString(),style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 18
+                                                      ),),
 
-                                                  ],
-                                                )
+                                                    ],
+                                                  )
 
-                                              ],
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                }
+                                    );
+                                  }
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ]
+                      ),
+                    if (x == 2)
+                      Column(
+                        children: <Widget>[
+                          Text(
+                            'List of Students',
+                            style: TextStyle(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.black54,
+                                fontSize: 40),
+                          ),
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(30))
+                            ),
+                            height: MediaQuery.of(context).size.height/1.4,
+                            child: NotificationListener<OverscrollIndicatorNotification>(
+                                // ignore: missing_return
+                                onNotification: (overScroll) {
+                                  overScroll.disallowGlow();
+                                },
+                              child: ListView.builder(
+                                physics: BouncingScrollPhysics(),
+                                  itemCount: Provider.of<FireStoreUni>(context).students.length,
+                                  itemBuilder: (BuildContext context,int index){
+                                    return ListTile(
+                                      leading: Padding(
+                                        padding: const EdgeInsets.fromLTRB(0,8,0,0),
+                                        child: Icon(Icons.person,size: 50,),
+                                      ),
+                                      title: Align(
+                                        alignment: Alignment(-1.1,0),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 5),
+                                          child: Material(
+                                            color: Colors.blueAccent.withOpacity(0.75),
+                                            elevation: 10,
+                                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 15),
+                                              width: MediaQuery.of(context).size.width/1.5,
+                                              height: MediaQuery.of(context).size.height/10,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Text( Provider.of<FireStoreUni>(context).students[index].Name+' - '+Provider.of<FireStoreUni>(context).students[index].Id.toString(),
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 20
+                                                  ),),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Icon(Icons.phone,color: Colors.white,size: 15,),
+                                                      SizedBox(width: 10,),
+                                                      Text(Provider.of<FireStoreUni>(context).students[index].Phone,style: TextStyle(
+                                                        color: Colors.black54,
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 15
+                                                      ),)
+
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Icon(Icons.mail,color: Colors.white,size: 15,),
+                                                      SizedBox(width: 10,),
+                                                      Text(Provider.of<FireStoreUni>(context).students[index].Email,style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontWeight: FontWeight.w500,
+                                                          fontSize: 15
+                                                      ),),
+
+                                                    ],
+                                                  )
+
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    SizedBox(
+                      height: 15,
                     ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                ],
-              )),
+                  ],
+                )),
+          ),
         ),
         rightChild: Scaffold(
           backgroundColor: Colors.white,

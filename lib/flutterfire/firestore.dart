@@ -15,9 +15,27 @@ class FireStoreUni extends ChangeNotifier {
   Admin admin;
   Student student;
   Faculty faculty;
-  Course course;
-  Degree degree;
   Registered registered;
+
+  void setFacultyEntity(Faculty x){
+    faculty = x;
+    notifyListeners();
+  }
+  
+  void setStudentEntity(Student x){
+    student = x;
+    notifyListeners();
+  }
+
+  void setRegisteredEntity(Registered x){
+    registered = x;
+    notifyListeners();
+  }
+
+  void setAdminEntity(Admin x){
+    admin = x;
+    notifyListeners();
+  }
 
   Future addFeed(String str, BuildContext context) async{
     Provider.of<UserManage>(context, listen: false).toggle_Load();

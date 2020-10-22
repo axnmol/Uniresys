@@ -35,15 +35,15 @@ class UpdateScreen extends StatelessWidget {
           var x = Provider.of<UserManage>(context,listen: false).pointer;
           var fireStoreUni = Provider.of<FireStoreUni>(context,listen: false);
           if(x == 0){
-            fireStoreUni.student = Student(student.Id, student.Name, mail, phone);
+            fireStoreUni.setStudentEntity(Student(student.Id, student.Name, mail, phone));
             await fireStoreUni.setStudent();
           }
           if(x == 2){
-            fireStoreUni.faculty = Faculty(faculty.Id, faculty.Name, mail, phone);
+            fireStoreUni.setFacultyEntity(Faculty(faculty.Id, faculty.Name, mail, phone));
             await fireStoreUni.setFaculty();
           }
           if(x == 1){
-            fireStoreUni.admin = Admin(mail, admin.Name, phone);
+            fireStoreUni.setAdminEntity(Admin(mail, admin.Name, phone));
             await fireStoreUni.setAdmin();
           }
           await Provider.of<SignUpIn>(context,listen: false).auth.currentUser.updateEmail(mail);

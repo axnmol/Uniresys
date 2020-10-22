@@ -61,20 +61,19 @@ class RegisterScreen extends StatelessWidget {
                   .signUP(context, mail, pass, vPass);
               if (Provider.of<UserManage>(context, listen: false).pointer ==
                   0) {
-                Provider.of<FireStoreUni>(context, listen: false).student =
-                    Student(id, name, mail, phone);
+                Provider.of<FireStoreUni>(context, listen: false).
+      setStudentEntity(Student(id, name, mail, phone));
                 await Provider.of<FireStoreUni>(context, listen: false)
                     .setStudent();
               }
               if (Provider.of<UserManage>(context, listen: false).pointer ==
                   2) {
-                Provider.of<FireStoreUni>(context, listen: false).faculty =
-                    Faculty(id, name, mail, phone);
+                Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(
+                    Faculty(id, name, mail, phone));
                 await Provider.of<FireStoreUni>(context, listen: false)
                     .setFaculty();
               }
-              Provider.of<FireStoreUni>(context, listen: false).registered =
-                  Registered(id);
+              Provider.of<FireStoreUni>(context, listen: false).setRegisteredEntity(Registered(id));
               await Provider.of<FireStoreUni>(context,listen: false).setRegistered();
               s = Provider.of<SignUpIn>(context, listen: false).getMsg();
             } else {
