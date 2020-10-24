@@ -16,6 +16,18 @@ class FireStoreUni extends ChangeNotifier {
   Student student;
   Faculty faculty;
   Registered registered;
+  Degree degree;
+  Course course;
+
+  void setCourseEntity(Course x){
+    course =x;
+    notifyListeners();
+  }
+
+  void setDegreeEntity(Degree x){
+    degree =x;
+    notifyListeners();
+  }
 
   void setFacultyEntity(Faculty x){
     faculty = x;

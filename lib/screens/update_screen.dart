@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
@@ -20,45 +20,42 @@ class UpdateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String mail,phone;
+    String mail, phone;
     var admin = Provider.of<FireStoreUni>(context).admin;
     var faculty = Provider.of<FireStoreUni>(context).faculty;
     var student = Provider.of<FireStoreUni>(context).student;
 
-    void update() async{
+    void update() async {
       String s;
       if (_uFormKey.currentState.validate()) {
         _uFormKey.currentState.save();
         FocusScope.of(context).requestFocus(FocusNode());
         Provider.of<UserManage>(context, listen: false).toggle_Load();
         try {
-          var x = Provider.of<UserManage>(context,listen: false).pointer;
-          var fireStoreUni = Provider.of<FireStoreUni>(context,listen: false);
-          if(x == 0){
+          await Provider.of<SignUpIn>(context, listen: false).auth.currentUser.updateEmail(mail);
+          var x = Provider.of<UserManage>(context, listen: false).pointer;
+          var fireStoreUni = Provider.of<FireStoreUni>(context, listen: false);
+          if (x == 0) {
             fireStoreUni.setStudentEntity(Student(student.Id, student.Name, mail, phone));
             await fireStoreUni.setStudent();
           }
-          if(x == 2){
+          if (x == 2) {
             fireStoreUni.setFacultyEntity(Faculty(faculty.Id, faculty.Name, mail, phone));
             await fireStoreUni.setFaculty();
           }
-          if(x == 1){
+          if (x == 1) {
             fireStoreUni.setAdminEntity(Admin(mail, admin.Name, phone));
             await fireStoreUni.setAdmin();
           }
-          await Provider.of<SignUpIn>(context,listen: false).auth.currentUser.updateEmail(mail);
-          s='Successfully Updated';
-
-        } on FirebaseAuthException catch(e){
+          s = 'Successfully Updated';
+        } on FirebaseAuthException catch (e) {
           s = e.code.toUpperCase().toString();
         }
         if (s == 'Successfully Updated') {
-          Provider.of<UserManage>(context, listen: false)
-              .showMyDialog(context, s, 0);
+          Provider.of<UserManage>(context, listen: false).showMyDialog(context, s, 0);
           _uFormKey.currentState.reset();
-        } else if(s!=null){
-          Provider.of<UserManage>(context, listen: false)
-              .errorDialog(s, context);
+        } else if (s != null) {
+          Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
         }
         Provider.of<UserManage>(context, listen: false).toggle_Load();
       }
@@ -75,8 +72,7 @@ class UpdateScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Phone',
             hintText: 'Enter Phone No.',
-            border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _phoneFocus.unfocus();
           FocusScope.of(context).requestFocus(_emailFocus);
@@ -87,15 +83,13 @@ class UpdateScreen extends StatelessWidget {
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.done,
         focusNode: _emailFocus,
-        validator: (input) =>
-        EmailValidator.validate(input) ? null : 'Invalid email address',
+        validator: (input) => EmailValidator.validate(input) ? null : 'Invalid email address',
         onSaved: (input) => mail = input,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Email',
             hintText: 'e.g. abc@gmail.com',
-            border:
-            OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _emailFocus.unfocus();
           update();
@@ -115,12 +109,8 @@ class UpdateScreen extends StatelessWidget {
             }
             update();
           },
-          child: Text('Update',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold)),
-        )
-    );
+          child: Text('Update', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        ));
 
     return Scaffold(
       appBar: AppBar(
@@ -141,10 +131,13 @@ class UpdateScreen extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: FittedBox(
-                      child: Icon(Icons.update_rounded,color: Colors.black54,),
-                        fit: BoxFit.contain,
+                      child: Icon(
+                        Icons.update_rounded,
+                        color: Colors.black54,
                       ),
+                      fit: BoxFit.contain,
                     ),
+                  ),
                   phoneField,
                   SizedBox(height: 20.0),
                   emailField,

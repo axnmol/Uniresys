@@ -5,6 +5,23 @@ class AdminManage extends ChangeNotifier{
  int crudSelect = 4;
  List<String> action=['Add','Update','View','Delete',''];
  List<String> maintain=['Student','Faculty','Degree','Course',''];
+ int id,it=0;
+ bool viewAll =false;
+
+ void setIt(int x){
+   it = x;
+   notifyListeners();
+ }
+
+ void setId(int x){
+   id =x;
+   notifyListeners();
+ }
+
+ void toggleView(){
+   viewAll = !viewAll;
+   notifyListeners();
+ }
 
  void setMSelect(int n){
    maintainSelect = n;

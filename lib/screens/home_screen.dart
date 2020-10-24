@@ -248,7 +248,7 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: LoadingOverlay(
         child: SafeArea(
-          child: Padding(
+          child: Container(
             padding: EdgeInsets.all(30),
             child: Form(
               key: _formKey,
