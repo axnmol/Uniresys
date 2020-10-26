@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:provider/provider.dart';
 
 import 'package:uniresys/users.dart';
@@ -9,11 +8,11 @@ import 'package:uniresys/entities/entities.dart';
 
 class FireStoreUni extends ChangeNotifier {
   final FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  var students = <Student>[];
+  var students = <Student>[Student(0, ' ', ' ', ' ')];
   var courses = <Course>[];
   String _error;
   Admin admin;
-  Student student;
+  Student student = Student(0, ' ', ' ', ' ');
   Faculty faculty;
   Registered registered;
   Degree degree;
@@ -86,11 +85,15 @@ class FireStoreUni extends ChangeNotifier {
   }
 
   Stream<List<Student>> getStudentFaculty(List<int> x) {
-    return fireStore
-        .collection('students')
-        .where('Id', whereIn: x)
-        .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) => Student.fromJson(doc.data())).toList());
+    if (x == [0, 0, 0]) {
+      return fireStore.collection('students').snapshots().map((snapshot) => snapshot.docs.map((doc) => Student.fromJson(doc.data())).toList());
+    } else {
+      return fireStore
+          .collection('students')
+          .where('Id', whereIn: x)
+          .snapshots()
+          .map((snapshot) => snapshot.docs.map((doc) => Student.fromJson(doc.data())).toList());
+    }
   }
 
   Stream<List<Faculty>> getFaculty() {

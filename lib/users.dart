@@ -3,63 +3,65 @@ import 'package:provider/provider.dart';
 import 'package:uniresys/screens/admin_screen.dart';
 import 'package:uniresys/screens/profile_screen.dart';
 
-class Users{
+class Users {
   String name;
   Users(this.name);
 }
 
-class UserManage extends ChangeNotifier{
+class UserManage extends ChangeNotifier {
   bool isLoad = false;
-  int pointer=1;
+  int pointer = 1;
   String selected;
-  final List<String> _drop=['Degree','','Course'];
-  final List<Users> _users=[
-    Users('Student'),
-    Users('Admin'),
-    Users('Faculty')
-  ];
+  final List<String> _drop = ['Degree', '', 'Course'];
+  final List<Users> _users = [Users('Student'), Users('Admin'), Users('Faculty')];
+  final List<int> _idFormat = [4, 0, 3];
 
-  void showMyDialog(BuildContext context,String str,int x) {
+  String getFormat() {
+    return _idFormat[pointer].toString();
+  }
+
+  void showMyDialog(BuildContext context, String str, int x) {
     dynamic msg;
     // For null
-    if(x==0){
+    if (x == 0) {
       msg = str;
     }
     // For Sign In and Sign Up
-    if(x==1) {
-      msg = _users[pointer].name + ' Successfully '+str;
+    if (x == 1) {
+      msg = _users[pointer].name + ' Successfully ' + str;
     }
     // For Feedback
-    if(x==2) {
-      msg = 'Feedback Successfully '+str;
+    if (x == 2) {
+      msg = 'Feedback Successfully ' + str;
     }
     showDialog<AlertDialog>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(40))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40))),
           title: Text(
             'Successful',
             textAlign: TextAlign.center,
           ),
-          content: Text(msg.toString(),textAlign: TextAlign.center,),
+          content: Text(
+            msg.toString(),
+            textAlign: TextAlign.center,
+          ),
           actions: <Widget>[
             FlatButton(
               child: Text('OK'),
               onPressed: () {
                 Navigator.pop(context);
                 Navigator.maybePop(context);
-                if(x==1){
-                  if(str == 'Registered'){
+                if (x == 1) {
+                  if (str == 'Registered') {
                     Navigator.pop(context);
                   }
-                  var point = Provider.of<UserManage>(context,listen: false).pointer;
-                  if(point!=1) {
+                  var point = Provider.of<UserManage>(context, listen: false).pointer;
+                  if (point != 1) {
                     Navigator.pushNamed(context, ProfileScreen.id);
-                  }
-                  else{
+                  } else {
                     Navigator.pushNamed(context, AdminScreen.id);
                   }
                 }
@@ -71,15 +73,14 @@ class UserManage extends ChangeNotifier{
     );
   }
 
-  void errorDialog(String s,BuildContext context) {
+  void errorDialog(String s, BuildContext context) {
     showDialog<AlertDialog>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
           elevation: 10,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(40))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(40))),
           title: Text('Unsuccessful', textAlign: TextAlign.center),
           content: Text(
             s,
@@ -98,33 +99,32 @@ class UserManage extends ChangeNotifier{
     );
   }
 
-  void setSelected(String string){
-    selected = string ;
+  void setSelected(String string) {
+    selected = string;
     notifyListeners();
   }
 
-
-  void setSelect(int n){
-    if(n>2&&n<0)return;
-    pointer=n;
+  void setSelect(int n) {
+    if (n > 2 && n < 0) return;
+    pointer = n;
     notifyListeners();
   }
 
-  void toggle_Load(){
-    isLoad=isLoad?false:true;
+  void toggle_Load() {
+    isLoad = isLoad ? false : true;
     notifyListeners();
   }
 
-  String getName(){
+  String getName() {
     return _users[pointer].name;
   }
 
-  String getDrop(){
+  String getDrop() {
     return _drop[pointer];
   }
 
-  Color getColor(int n){
-    if(n==pointer) {
+  Color getColor(int n) {
+    if (n == pointer) {
       return Colors.blueAccent;
     } else {
       return Colors.black54;

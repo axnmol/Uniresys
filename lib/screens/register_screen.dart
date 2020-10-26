@@ -93,107 +93,113 @@ class RegisterScreen extends StatelessWidget {
     }
 
     final nameField = TextFormField(
-        keyboardType: TextInputType.text,
-        style: TextStyle(),
-        textInputAction: TextInputAction.next,
-        focusNode: _nameFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => name = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Name',
-            hintText: 'Enter Name',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _nameFocus.unfocus();
-          FocusScope.of(context).requestFocus(_phoneFocus);
-        });
+      keyboardType: TextInputType.text,
+      style: TextStyle(),
+      textInputAction: TextInputAction.next,
+      focusNode: _nameFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => name = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Name',
+          hintText: 'Enter Name',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _nameFocus.unfocus();
+        FocusScope.of(context).requestFocus(_phoneFocus);
+      },
+    );
 
     final phoneField = TextFormField(
-        keyboardType: TextInputType.phone,
-        style: TextStyle(),
-        textInputAction: TextInputAction.next,
-        focusNode: _phoneFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => phone = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Phone',
-            hintText: 'Enter Phone No.',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _phoneFocus.unfocus();
-          FocusScope.of(context).requestFocus(_emailFocus);
-        });
+      keyboardType: TextInputType.phone,
+      style: TextStyle(),
+      textInputAction: TextInputAction.next,
+      focusNode: _phoneFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => phone = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Phone',
+          hintText: 'Enter Phone No.',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _phoneFocus.unfocus();
+        FocusScope.of(context).requestFocus(_emailFocus);
+      },
+    );
 
     final emailField = TextFormField(
-        style: TextStyle(),
-        keyboardType: TextInputType.emailAddress,
-        textInputAction: TextInputAction.next,
-        focusNode: _emailFocus,
-        validator: (input) => EmailValidator.validate(input) ? null : 'Invalid email address',
-        onSaved: (input) => mail = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Email',
-            hintText: 'e.g. abc@gmail.com',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _emailFocus.unfocus();
-          FocusScope.of(context).requestFocus(_passFocus);
-        });
+      style: TextStyle(),
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      focusNode: _emailFocus,
+      validator: (input) => EmailValidator.validate(input) ? null : 'Invalid email address',
+      onSaved: (input) => mail = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Email',
+          hintText: 'e.g. abc@gmail.com',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _emailFocus.unfocus();
+        FocusScope.of(context).requestFocus(_passFocus);
+      },
+    );
 
     final passField = TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        style: TextStyle(),
-        textInputAction: TextInputAction.next,
-        focusNode: _passFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => pass = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Password',
-            suffixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onFieldSubmitted: (term) {
-          _passFocus.unfocus();
-          FocusScope.of(context).requestFocus(_verifyFocus);
-        });
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      style: TextStyle(),
+      textInputAction: TextInputAction.next,
+      focusNode: _passFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => pass = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Password',
+          suffixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+      onFieldSubmitted: (term) {
+        _passFocus.unfocus();
+        FocusScope.of(context).requestFocus(_verifyFocus);
+      },
+    );
 
     final vPassField = TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        style: TextStyle(),
-        textInputAction: TextInputAction.next,
-        focusNode: _verifyFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => vPass = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Verify Password',
-            suffixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onFieldSubmitted: (term) {
-          _verifyFocus.unfocus();
-          FocusScope.of(context).requestFocus(_idFocus);
-        });
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      style: TextStyle(),
+      textInputAction: TextInputAction.next,
+      focusNode: _verifyFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => vPass = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Verify Password',
+          suffixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+      onFieldSubmitted: (term) {
+        _verifyFocus.unfocus();
+        FocusScope.of(context).requestFocus(_idFocus);
+      },
+    );
 
     final idField = TextFormField(
-        keyboardType: TextInputType.number,
-        style: TextStyle(),
-        textInputAction: TextInputAction.done,
-        focusNode: _idFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => id = int.parse(input),
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: Provider.of<UserManage>(context).getName() + ' Id',
-            hintText: 'Enter Id.',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _idFocus.unfocus();
-        });
+      keyboardType: TextInputType.number,
+      style: TextStyle(),
+      textInputAction: TextInputAction.done,
+      focusNode: _idFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => id = int.parse(input),
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: Provider.of<UserManage>(context).getName() + ' Id',
+          hintText: 'Enter Id.   [' + Provider.of<UserManage>(context).getFormat() + 'XX]',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _idFocus.unfocus();
+      },
+    );
 
     final registerButton = Material(
       elevation: 10,
@@ -201,35 +207,36 @@ class RegisterScreen extends StatelessWidget {
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.blueAccent,
       child: StreamBuilder<List<Registered>>(
-          stream: Provider.of<FireStoreUni>(context).getRegistered(),
-          builder: (context, snap) {
-            if (!snap.hasData) {
-              return Center(
-                child: SpinKitDoubleBounce(
-                  color: Colors.white,
-                  size: 150,
-                ),
-              );
-            }
-            return MaterialButton(
-              minWidth: MediaQuery.of(context).size.width / 3,
-              padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-              onPressed: () {
-                if (_rFormKey.currentState.validate()) {
-                  _rFormKey.currentState.save();
-                  var len = snap.data.length;
-                  for (var i = 0; i < len; ++i) {
-                    if (snap.data[i].Id == id) {
-                      registerBool = false;
-                      break;
-                    }
+        stream: Provider.of<FireStoreUni>(context).getRegistered(),
+        builder: (context, snap) {
+          if (!snap.hasData) {
+            return Center(
+              child: SpinKitDoubleBounce(
+                color: Colors.white,
+                size: 150,
+              ),
+            );
+          }
+          return MaterialButton(
+            minWidth: MediaQuery.of(context).size.width / 3,
+            padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+            onPressed: () {
+              if (_rFormKey.currentState.validate()) {
+                _rFormKey.currentState.save();
+                var len = snap.data.length;
+                for (var i = 0; i < len; ++i) {
+                  if (snap.data[i].Id == id) {
+                    registerBool = false;
+                    break;
                   }
                 }
-                register();
-              },
-              child: Text('Register', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            );
-          }),
+              }
+              register();
+            },
+            child: Text('Register', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          );
+        },
+      ),
     );
 
     final dropDownF = Material(
@@ -237,57 +244,60 @@ class RegisterScreen extends StatelessWidget {
       shadowColor: Colors.blueAccent,
       borderRadius: BorderRadius.circular(30),
       child: StreamBuilder<List<Course>>(
-          stream: Provider.of<FireStoreUni>(context).getCourses(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: SpinKitDoubleBounce(
-                  color: Colors.white,
-                  size: 150,
-                ),
-              );
-            }
-            var list = makeStrC(snapshot.data);
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 60),
-              child: DropdownButton<String>(
-                value: Provider.of<UserManage>(context).selected,
-                icon: Icon(Icons.arrow_drop_down),
-                iconDisabledColor: Colors.blueAccent,
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
-                underline: Container(
-                  height: 1,
-                  color: Colors.blueAccent,
-                ),
-                items: list.map((String value) {
+        stream: Provider.of<FireStoreUni>(context).getCourses(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: SpinKitDoubleBounce(
+                color: Colors.white,
+                size: 150,
+              ),
+            );
+          }
+          var list = makeStrC(snapshot.data);
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 60),
+            child: DropdownButton<String>(
+              value: Provider.of<UserManage>(context).selected,
+              icon: Icon(Icons.arrow_drop_down),
+              iconDisabledColor: Colors.blueAccent,
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
+              underline: Container(
+                height: 1,
+                color: Colors.blueAccent,
+              ),
+              items: list.map(
+                (String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Center(child: Text(value)),
                   );
-                }).toList(),
-                onChanged: (String newValue) {
-                  if (_rFormKey.currentState.validate()) {
-                    _rFormKey.currentState.save();
-                    FocusScope.of(context).unfocus();
-                    var len = snapshot.data.length;
-                    for (var i = 0; i < len; ++i) {
-                      if (snapshot.data[i].Name == newValue) {
-                        if (snapshot.data[i].Faculty_Id == id) {
-                          result = true;
-                          break;
-                        }
+                },
+              ).toList(),
+              onChanged: (String newValue) {
+                if (_rFormKey.currentState.validate()) {
+                  _rFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  var len = snapshot.data.length;
+                  for (var i = 0; i < len; ++i) {
+                    if (snapshot.data[i].Name == newValue) {
+                      if (snapshot.data[i].Faculty_Id == id) {
+                        result = true;
+                        break;
                       }
                     }
                   }
-                  Provider.of<UserManage>(context, listen: false).setSelected(newValue);
-                },
-                hint: Text(
-                  'Please select a ' + Provider.of<UserManage>(context).getDrop(),
-                  style: TextStyle(color: Colors.blueAccent),
-                ),
+                }
+                Provider.of<UserManage>(context, listen: false).setSelected(newValue);
+              },
+              hint: Text(
+                'Please select a ' + Provider.of<UserManage>(context).getDrop(),
+                style: TextStyle(color: Colors.blueAccent),
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
 
     final dropDownS = Material(
@@ -295,59 +305,62 @@ class RegisterScreen extends StatelessWidget {
       shadowColor: Colors.blueAccent,
       borderRadius: BorderRadius.circular(30),
       child: StreamBuilder<List<Degree>>(
-          stream: Provider.of<FireStoreUni>(context).getDegrees(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(
-                child: SpinKitDoubleBounce(
-                  color: Colors.blueAccent,
-                  size: 150,
-                ),
-              );
-            }
-            var list = makeStrD(snapshot.data);
-            return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 60),
-              child: DropdownButton<String>(
-                value: Provider.of<UserManage>(context).selected,
-                icon: Icon(Icons.arrow_drop_down),
-                iconDisabledColor: Colors.blueAccent,
-                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
-                underline: Container(
-                  height: 1,
-                  color: Colors.blueAccent,
-                ),
-                items: list.map((String value) {
+        stream: Provider.of<FireStoreUni>(context).getDegrees(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return Center(
+              child: SpinKitDoubleBounce(
+                color: Colors.blueAccent,
+                size: 150,
+              ),
+            );
+          }
+          var list = makeStrD(snapshot.data);
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 60),
+            child: DropdownButton<String>(
+              value: Provider.of<UserManage>(context).selected,
+              icon: Icon(Icons.arrow_drop_down),
+              iconDisabledColor: Colors.blueAccent,
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
+              underline: Container(
+                height: 1,
+                color: Colors.blueAccent,
+              ),
+              items: list.map(
+                (String value) {
                   return DropdownMenuItem<String>(
                     value: value,
                     child: Center(child: Text(value)),
                   );
-                }).toList(),
-                onChanged: (String newValue) {
-                  if (_rFormKey.currentState.validate()) {
-                    _rFormKey.currentState.save();
-                    FocusScope.of(context).unfocus();
-                    var len = snapshot.data.length;
-                    for (var i = 0; i < len; ++i) {
-                      if (snapshot.data[i].Name == newValue) {
-                        var ids = snapshot.data[i].Student_Ids;
-                        for (var j = 0; j < ids.length; ++j) {
-                          if (ids[j] == id) {
-                            result = true;
-                          }
+                },
+              ).toList(),
+              onChanged: (String newValue) {
+                if (_rFormKey.currentState.validate()) {
+                  _rFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  var len = snapshot.data.length;
+                  for (var i = 0; i < len; ++i) {
+                    if (snapshot.data[i].Name == newValue) {
+                      var ids = snapshot.data[i].Student_Ids;
+                      for (var j = 0; j < ids.length; ++j) {
+                        if (ids[j] == id) {
+                          result = true;
                         }
                       }
                     }
                   }
-                  Provider.of<UserManage>(context, listen: false).setSelected(newValue);
-                },
-                hint: Text(
-                  'Please select a ' + Provider.of<UserManage>(context).getDrop(),
-                  style: TextStyle(color: Colors.blueAccent),
-                ),
+                }
+                Provider.of<UserManage>(context, listen: false).setSelected(newValue);
+              },
+              hint: Text(
+                'Please select a ' + Provider.of<UserManage>(context).getDrop(),
+                style: TextStyle(color: Colors.blueAccent),
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
 
     return Scaffold(

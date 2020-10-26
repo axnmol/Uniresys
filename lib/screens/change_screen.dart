@@ -1,6 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -50,57 +50,60 @@ class ChangeScreen extends StatelessWidget {
     }
 
     final passField = TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        style: TextStyle(),
-        textInputAction: TextInputAction.next,
-        focusNode: _passFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => pass = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Password',
-            suffixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onFieldSubmitted: (term) {
-          _passFocus.unfocus();
-          FocusScope.of(context).requestFocus(_verifyFocus);
-        });
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      style: TextStyle(),
+      textInputAction: TextInputAction.next,
+      focusNode: _passFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => pass = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Password',
+          suffixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+      onFieldSubmitted: (term) {
+        _passFocus.unfocus();
+        FocusScope.of(context).requestFocus(_verifyFocus);
+      },
+    );
 
     final vPassField = TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        style: TextStyle(),
-        textInputAction: TextInputAction.done,
-        focusNode: _verifyFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => vPass = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'New Password',
-            suffixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onFieldSubmitted: (term) {
-          _verifyFocus.unfocus();
-          FocusScope.of(context).requestFocus(_newFocus);
-        });
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      style: TextStyle(),
+      textInputAction: TextInputAction.done,
+      focusNode: _verifyFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => vPass = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'New Password',
+          suffixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+      onFieldSubmitted: (term) {
+        _verifyFocus.unfocus();
+        FocusScope.of(context).requestFocus(_newFocus);
+      },
+    );
 
     final nPassField = TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        style: TextStyle(),
-        textInputAction: TextInputAction.done,
-        focusNode: _newFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => newPass = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Verify Password',
-            suffixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
-        onFieldSubmitted: (term) {
-          change();
-        });
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      style: TextStyle(),
+      textInputAction: TextInputAction.done,
+      focusNode: _newFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => newPass = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Verify Password',
+          suffixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+      onFieldSubmitted: (term) {
+        change();
+      },
+    );
 
     final changeButton = Material(
         elevation: 10,

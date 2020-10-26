@@ -45,39 +45,41 @@ class HomeScreen extends StatelessWidget {
     }
 
     final emailField = TextFormField(
-        style: TextStyle(),
-        keyboardType: TextInputType.emailAddress,
-        textInputAction: TextInputAction.next,
-        focusNode: _emailFocus,
-        validator: (email) => EmailValidator.validate(email) ? null : 'Invalid email address',
-        onSaved: (email) => _email = email,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Email',
-            hintText: 'e.g. abc@gmail.com',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _emailFocus.unfocus();
-          FocusScope.of(context).requestFocus(_passFocus);
-        });
+      style: TextStyle(),
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.next,
+      focusNode: _emailFocus,
+      validator: (email) => EmailValidator.validate(email) ? null : 'Invalid email address',
+      onSaved: (email) => _email = email,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Email',
+          hintText: 'e.g. abc@gmail.com',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _emailFocus.unfocus();
+        FocusScope.of(context).requestFocus(_passFocus);
+      },
+    );
 
     final passwordField = TextFormField(
-        keyboardType: TextInputType.text,
-        obscureText: true,
-        style: TextStyle(),
-        textInputAction: TextInputAction.done,
-        focusNode: _passFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (password) => _password = password,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Password',
-            suffixIcon: Icon(Icons.lock),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _passFocus.unfocus();
-          login();
-        });
+      keyboardType: TextInputType.text,
+      obscureText: true,
+      style: TextStyle(),
+      textInputAction: TextInputAction.done,
+      focusNode: _passFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (password) => _password = password,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Password',
+          suffixIcon: Icon(Icons.lock),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _passFocus.unfocus();
+        login();
+      },
+    );
 
     final signInButton = Material(
       elevation: 10,
@@ -85,63 +87,66 @@ class HomeScreen extends StatelessWidget {
       borderRadius: BorderRadius.circular(30.0),
       color: Colors.blueAccent,
       child: StreamBuilder<List<Admin>>(
-          stream: Provider.of<FireStoreUni>(context).getAdmin(),
-          builder: (context, snapAdmin) {
-            return StreamBuilder<List<Student>>(
-                stream: Provider.of<FireStoreUni>(context).getStudent(),
-                builder: (context, snapStudent) {
-                  return StreamBuilder<List<Faculty>>(
-                      stream: Provider.of<FireStoreUni>(context).getFaculty(),
-                      builder: (context, snapFaculty) {
-                        if (!snapAdmin.hasData && !snapFaculty.hasData && !snapFaculty.hasData) {
-                          return Center(
-                            child: SpinKitDoubleBounce(
-                              color: Colors.blueAccent,
-                              size: 150,
-                            ),
-                          );
-                        }
-                        var lenA = snapAdmin.data.length;
-                        var lenS = snapStudent.data.length;
-                        var lenF = snapFaculty.data.length;
-                        return MaterialButton(
-                          minWidth: MediaQuery.of(context).size.width / 3,
-                          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                          onPressed: () {
-                            if (_formKey.currentState.validate()) {
-                              _formKey.currentState.save();
-                              if (snapAdmin.data.any((element) => element.Email == _email)) {
-                                for (var i = 0; i < lenA; ++i) {
-                                  if (snapAdmin.data[i].Email == _email) {
-                                    print('admin');
-                                    Provider.of<FireStoreUni>(context, listen: false).setAdminEntity(snapAdmin.data[i]);
-                                    Provider.of<UserManage>(context, listen: false).setSelect(1);
-                                    error = false;
-                                  }
-                                }
-                              }
-                              for (var i = 0; i < lenS; ++i) {
-                                if (snapStudent.data[i].Email == _email) {
-                                  Provider.of<FireStoreUni>(context, listen: false).setStudentEntity(snapStudent.data[i]);
-                                  Provider.of<UserManage>(context, listen: false).setSelect(0);
-                                  error = false;
-                                }
-                              }
-                              for (var i = 0; i < lenF; ++i) {
-                                if (snapFaculty.data[i].Email == _email) {
-                                  Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(snapFaculty.data[i]);
-                                  Provider.of<UserManage>(context, listen: false).setSelect(2);
-                                  error = false;
-                                }
-                              }
-                              login();
+        stream: Provider.of<FireStoreUni>(context).getAdmin(),
+        builder: (context, snapAdmin) {
+          return StreamBuilder<List<Student>>(
+            stream: Provider.of<FireStoreUni>(context).getStudent(),
+            builder: (context, snapStudent) {
+              return StreamBuilder<List<Faculty>>(
+                stream: Provider.of<FireStoreUni>(context).getFaculty(),
+                builder: (context, snapFaculty) {
+                  if (!snapAdmin.hasData && !snapFaculty.hasData && !snapFaculty.hasData) {
+                    return Center(
+                      child: SpinKitDoubleBounce(
+                        color: Colors.blueAccent,
+                        size: 150,
+                      ),
+                    );
+                  }
+                  var lenA = snapAdmin.data.length;
+                  var lenS = snapStudent.data.length;
+                  var lenF = snapFaculty.data.length;
+                  return MaterialButton(
+                    minWidth: MediaQuery.of(context).size.width / 3,
+                    padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                    onPressed: () {
+                      if (_formKey.currentState.validate()) {
+                        _formKey.currentState.save();
+                        if (snapAdmin.data.any((element) => element.Email == _email)) {
+                          for (var i = 0; i < lenA; ++i) {
+                            if (snapAdmin.data[i].Email == _email) {
+                              print('admin');
+                              Provider.of<FireStoreUni>(context, listen: false).setAdminEntity(snapAdmin.data[i]);
+                              Provider.of<UserManage>(context, listen: false).setSelect(1);
+                              error = false;
                             }
-                          },
-                          child: Text('Sign In', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                        );
-                      });
-                });
-          }),
+                          }
+                        }
+                        for (var i = 0; i < lenS; ++i) {
+                          if (snapStudent.data[i].Email == _email) {
+                            Provider.of<FireStoreUni>(context, listen: false).setStudentEntity(snapStudent.data[i]);
+                            Provider.of<UserManage>(context, listen: false).setSelect(0);
+                            error = false;
+                          }
+                        }
+                        for (var i = 0; i < lenF; ++i) {
+                          if (snapFaculty.data[i].Email == _email) {
+                            Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(snapFaculty.data[i]);
+                            Provider.of<UserManage>(context, listen: false).setSelect(2);
+                            error = false;
+                          }
+                        }
+                        login();
+                      }
+                    },
+                    child: Text('Sign In', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  );
+                },
+              );
+            },
+          );
+        },
+      ),
     );
 
     final signUpButton = Material(
@@ -173,13 +178,14 @@ class HomeScreen extends StatelessWidget {
           children: <TextSpan>[
             TextSpan(text: 'Need Help? '),
             TextSpan(
-                text: 'Contact Us',
-                style: TextStyle(color: Colors.blueAccent),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    _formKey.currentState.reset();
-                    Navigator.pushNamed(context, ContactScreen.id);
-                  }),
+              text: 'Contact Us',
+              style: TextStyle(color: Colors.blueAccent),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  _formKey.currentState.reset();
+                  Navigator.pushNamed(context, ContactScreen.id);
+                },
+            ),
           ],
         ),
       ),

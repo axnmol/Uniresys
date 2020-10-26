@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:provider/provider.dart';
 
 import 'package:uniresys/users.dart';
@@ -10,13 +9,12 @@ class SignUpIn extends ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
   String _error;
 
-  Future signIn(BuildContext context,String e,String p) async{
+  Future signIn(BuildContext context, String e, String p) async {
     Provider.of<UserManage>(context, listen: false).toggle_Load();
     try {
-      var userCredential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: e, password: p);
+      var userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: e, password: p);
       if (userCredential != null) {
-        _error='Success';
+        _error = 'Success';
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -33,13 +31,12 @@ class SignUpIn extends ChangeNotifier {
     await _error;
   }
 
-  Future signUP(BuildContext context,String e, String p, String vp) async{
+  Future signUP(BuildContext context, String e, String p, String vp) async {
     Provider.of<UserManage>(context, listen: false).toggle_Load();
     try {
-        var userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: e, password: p);
-        if (userCredential != null) {
-          _error='Success';
+      var userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: e, password: p);
+      if (userCredential != null) {
+        _error = 'Success';
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
@@ -60,7 +57,7 @@ class SignUpIn extends ChangeNotifier {
     await auth.signOut();
   }
 
-  String getMsg(){
+  String getMsg() {
     return _error;
   }
 }

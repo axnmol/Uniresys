@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -60,54 +60,57 @@ class UpdateScreen extends StatelessWidget {
     }
 
     final phoneField = TextFormField(
-        keyboardType: TextInputType.phone,
-        style: TextStyle(),
-        textInputAction: TextInputAction.next,
-        focusNode: _phoneFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => phone = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Phone',
-            hintText: 'Enter Phone No.',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _phoneFocus.unfocus();
-          FocusScope.of(context).requestFocus(_emailFocus);
-        });
+      keyboardType: TextInputType.phone,
+      style: TextStyle(),
+      textInputAction: TextInputAction.next,
+      focusNode: _phoneFocus,
+      validator: (input) => input.isEmpty ? 'Required' : null,
+      onSaved: (input) => phone = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Phone',
+          hintText: 'Enter Phone No.',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _phoneFocus.unfocus();
+        FocusScope.of(context).requestFocus(_emailFocus);
+      },
+    );
 
     final emailField = TextFormField(
-        style: TextStyle(),
-        keyboardType: TextInputType.emailAddress,
-        textInputAction: TextInputAction.done,
-        focusNode: _emailFocus,
-        validator: (input) => EmailValidator.validate(input) ? null : 'Invalid email address',
-        onSaved: (input) => mail = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: 'Email',
-            hintText: 'e.g. abc@gmail.com',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _emailFocus.unfocus();
-          update();
-        });
+      style: TextStyle(),
+      keyboardType: TextInputType.emailAddress,
+      textInputAction: TextInputAction.done,
+      focusNode: _emailFocus,
+      validator: (input) => EmailValidator.validate(input) ? null : 'Invalid email address',
+      onSaved: (input) => mail = input,
+      decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+          labelText: 'Email',
+          hintText: 'e.g. abc@gmail.com',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+      onFieldSubmitted: (term) {
+        _emailFocus.unfocus();
+        update();
+      },
+    );
 
     final updateButton = Material(
-        elevation: 10,
-        shadowColor: Colors.blueAccent,
-        borderRadius: BorderRadius.circular(30.0),
-        color: Colors.blueAccent,
-        child: MaterialButton(
-          minWidth: MediaQuery.of(context).size.width / 3,
-          padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          onPressed: () async {
-            Provider.of<UserManage>(context, listen: false).toggle_Load();
-            await update();
-            Provider.of<UserManage>(context, listen: false).toggle_Load();
-          },
-          child: Text('Update', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        ));
+      elevation: 10,
+      shadowColor: Colors.blueAccent,
+      borderRadius: BorderRadius.circular(30.0),
+      color: Colors.blueAccent,
+      child: MaterialButton(
+        minWidth: MediaQuery.of(context).size.width / 3,
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () async {
+          Provider.of<UserManage>(context, listen: false).toggle_Load();
+          await update();
+          Provider.of<UserManage>(context, listen: false).toggle_Load();
+        },
+        child: Text('Update', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+      ),
+    );
 
     return Scaffold(
       appBar: AppBar(

@@ -15,18 +15,16 @@ class ContactScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String _feed;
 
-    void submitFeed() async{
+    void submitFeed() async {
       String s;
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
         FocusScope.of(context).requestFocus(FocusNode());
-         await Provider.of<FireStoreUni>(context, listen: false)
-            .addFeed(_feed, context);
+        await Provider.of<FireStoreUni>(context, listen: false).addFeed(_feed, context);
         s = Provider.of<FireStoreUni>(context, listen: false).getMsg();
       }
       if (s == 'Success') {
-        Provider.of<UserManage>(context, listen: false)
-            .showMyDialog(context, 'Submitted', 2);
+        Provider.of<UserManage>(context, listen: false).showMyDialog(context, 'Submitted', 2);
         _formKey.currentState.reset();
       } else if (s != null) {
         Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
@@ -46,8 +44,7 @@ class ContactScreen extends StatelessWidget {
           labelText: 'Feedback',
           hintText: 'Submit Feedback',
           suffixIcon: Icon(Icons.feedback),
-          border:
-              OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
     );
 
     final submitButton = Material(
@@ -61,9 +58,7 @@ class ContactScreen extends StatelessWidget {
         onPressed: () {
           submitFeed();
         },
-        child: Text('Submit',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        child: Text('Submit', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
 
