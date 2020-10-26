@@ -1,17 +1,20 @@
 class Registered{
   final int Id;
+  final String Password;
 
-  Registered(this.Id);
+  Registered(this.Id,this.Password);
 
   factory Registered.fromJson(Map<String,dynamic> json){
     return Registered(
       json['Id'],
+      json['Password']
     );
   }
 
   Map<String,dynamic> toMap(){
     return<String,dynamic>{
-      'Id':Id
+      'Id':Id,
+      'Password':Password
     };
   }
 }

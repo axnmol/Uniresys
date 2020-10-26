@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:uniresys/flutterfire/firestore.dart';
-
-import 'package:uniresys/screens/contact_screen.dart';
-import 'package:uniresys/screens/register_screen.dart';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 
+import 'package:uniresys/flutterfire/firestore.dart';
+import 'package:uniresys/screens/contact_screen.dart';
+import 'package:uniresys/screens/register_screen.dart';
 import 'package:uniresys/flutterfire/fireauth.dart';
 import 'package:uniresys/users.dart';
 import 'package:uniresys/entities/entities.dart';
@@ -23,23 +22,24 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String _email, _password;
+    var error = true;
 
     void login() async {
+      String s;
+      if (error) s = ' User not found ';
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
-        String s;
         FocusScope.of(context).requestFocus(FocusNode());
-        await Provider.of<SignUpIn>(context, listen: false)
-            .signIn(context, _email, _password);
-        s = Provider.of<SignUpIn>(context, listen: false).getMsg();
-        _passFocus.unfocus();
-        _formKey.currentState.reset();
+        if (s == null) {
+          await Provider.of<SignUpIn>(context, listen: false).signIn(context, _email, _password);
+          s = Provider.of<SignUpIn>(context, listen: false).getMsg();
+          _passFocus.unfocus();
+          _formKey.currentState.reset();
+        }
         if (s == 'Success') {
-          Provider.of<UserManage>(context, listen: false)
-              .showMyDialog(context, 'Logged In', 1);
+          Provider.of<UserManage>(context, listen: false).showMyDialog(context, 'Logged In', 1);
         } else if (s != null) {
-          Provider.of<UserManage>(context, listen: false)
-              .errorDialog(s, context);
+          Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
         }
       }
     }
@@ -49,15 +49,13 @@ class HomeScreen extends StatelessWidget {
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
         focusNode: _emailFocus,
-        validator: (email) =>
-            EmailValidator.validate(email) ? null : 'Invalid email address',
+        validator: (email) => EmailValidator.validate(email) ? null : 'Invalid email address',
         onSaved: (email) => _email = email,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Email',
             hintText: 'e.g. abc@gmail.com',
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _emailFocus.unfocus();
           FocusScope.of(context).requestFocus(_passFocus);
@@ -75,8 +73,7 @@ class HomeScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Password',
             suffixIcon: Icon(Icons.lock),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _passFocus.unfocus();
           login();
@@ -96,9 +93,7 @@ class HomeScreen extends StatelessWidget {
                   return StreamBuilder<List<Faculty>>(
                       stream: Provider.of<FireStoreUni>(context).getFaculty(),
                       builder: (context, snapFaculty) {
-                        if (!snapAdmin.hasData &&
-                            !snapFaculty.hasData &&
-                            !snapFaculty.hasData) {
+                        if (!snapAdmin.hasData && !snapFaculty.hasData && !snapFaculty.hasData) {
                           return Center(
                             child: SpinKitDoubleBounce(
                               color: Colors.blueAccent,
@@ -115,47 +110,34 @@ class HomeScreen extends StatelessWidget {
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
                               _formKey.currentState.save();
-                              if(snapAdmin.data.any((element) => element.Email==_email)){
-                              for (var i = 0; i < lenA; ++i) {
-                                if (snapAdmin.data[i].Email == _email) {
-                                  print('admin');
-                                  Provider.of<FireStoreUni>(context,
-                                          listen: false)
-                                      .setAdminEntity(snapAdmin.data[i]);
-                                  Provider.of<UserManage>(context,
-                                          listen: false)
-                                      .setSelect(1);
-                                  break;
+                              if (snapAdmin.data.any((element) => element.Email == _email)) {
+                                for (var i = 0; i < lenA; ++i) {
+                                  if (snapAdmin.data[i].Email == _email) {
+                                    print('admin');
+                                    Provider.of<FireStoreUni>(context, listen: false).setAdminEntity(snapAdmin.data[i]);
+                                    Provider.of<UserManage>(context, listen: false).setSelect(1);
+                                    error = false;
+                                  }
                                 }
-                              }}
+                              }
                               for (var i = 0; i < lenS; ++i) {
                                 if (snapStudent.data[i].Email == _email) {
-                                  Provider.of<FireStoreUni>(context,
-                                          listen: false)
-                                      .setStudentEntity(snapStudent.data[i]);
-                                  Provider.of<UserManage>(context,
-                                          listen: false)
-                                      .setSelect(0);
+                                  Provider.of<FireStoreUni>(context, listen: false).setStudentEntity(snapStudent.data[i]);
+                                  Provider.of<UserManage>(context, listen: false).setSelect(0);
+                                  error = false;
                                 }
                               }
                               for (var i = 0; i < lenF; ++i) {
                                 if (snapFaculty.data[i].Email == _email) {
-                                  Provider.of<FireStoreUni>(context,
-                                          listen: false)
-                                      .setFacultyEntity(snapFaculty.data[i]);
-                                  Provider.of<UserManage>(context,
-                                          listen: false)
-                                      .setSelect(2);
+                                  Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(snapFaculty.data[i]);
+                                  Provider.of<UserManage>(context, listen: false).setSelect(2);
+                                  error = false;
                                 }
                               }
                               login();
                             }
                           },
-                          child: Text('Sign In',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold)),
+                          child: Text('Sign In', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                         );
                       });
                 });
@@ -176,13 +158,10 @@ class HomeScreen extends StatelessWidget {
             Provider.of<UserManage>(context, listen: false).setSelected(null);
             Navigator.pushNamed(context, RegisterScreen.id);
           } else {
-            Provider.of<UserManage>(context, listen: false)
-                .errorDialog('Cannot sign up as Admin', context);
+            Provider.of<UserManage>(context, listen: false).errorDialog('Cannot sign up as Admin', context);
           }
         },
-        child: Text('Sign Up',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        child: Text('Sign Up', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       ),
     );
 
@@ -215,30 +194,19 @@ class HomeScreen extends StatelessWidget {
               onTap: () {
                 Provider.of<UserManage>(context, listen: false).setSelect(0);
               },
-              child: Text('Student',
-                  style: TextStyle(
-                      color: Provider.of<UserManage>(context).getColor(0),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold))),
+              child:
+                  Text('Student', style: TextStyle(color: Provider.of<UserManage>(context).getColor(0), fontSize: 20, fontWeight: FontWeight.bold))),
           GestureDetector(
             onTap: () {
               Provider.of<UserManage>(context, listen: false).setSelect(1);
             },
-            child: Text('Admin',
-                style: TextStyle(
-                    color: Provider.of<UserManage>(context).getColor(1),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
+            child: Text('Admin', style: TextStyle(color: Provider.of<UserManage>(context).getColor(1), fontSize: 20, fontWeight: FontWeight.bold)),
           ),
           GestureDetector(
             onTap: () {
               Provider.of<UserManage>(context, listen: false).setSelect(2);
             },
-            child: Text('Faculty',
-                style: TextStyle(
-                    color: Provider.of<UserManage>(context).getColor(2),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
+            child: Text('Faculty', style: TextStyle(color: Provider.of<UserManage>(context).getColor(2), fontSize: 20, fontWeight: FontWeight.bold)),
           )
         ],
       ),
@@ -275,9 +243,7 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[signInButton, signUpButton]),
-                  Expanded(
-                    child: SizedBox(),
-                  ),
+                  Expanded(child: Container()),
                   contactUni,
                 ],
               ),

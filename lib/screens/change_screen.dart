@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:uniresys/flutterfire/fireauth.dart';
 
+import 'package:uniresys/flutterfire/fireauth.dart';
 import 'package:uniresys/users.dart';
 
 class ChangeScreen extends StatelessWidget {
@@ -24,23 +24,14 @@ class ChangeScreen extends StatelessWidget {
       String s;
       if (_cFormKey.currentState.validate()) {
         _cFormKey.currentState.save();
-        FocusScope.of(context).requestFocus(FocusNode());
-        Provider.of<UserManage>(context, listen: false).toggle_Load();
+        FocusScope.of(context).unfocus();
         if (newPass == vPass) {
           try {
-            var user =
-                Provider.of<SignUpIn>(context, listen: false).auth.currentUser;
-            var credential =
-                EmailAuthProvider.credential(email: user.email, password: pass);
-            var authResult = await Provider.of<SignUpIn>(context, listen: false)
-                .auth
-                .currentUser
-                .reauthenticateWithCredential(credential);
+            var user = await Provider.of<SignUpIn>(context, listen: false).auth.currentUser;
+            var credential = EmailAuthProvider.credential(email: user.email, password: pass);
+            var authResult = await Provider.of<SignUpIn>(context, listen: false).auth.currentUser.reauthenticateWithCredential(credential);
             if (authResult != null) {
-              await Provider.of<SignUpIn>(context, listen: false)
-                  .auth
-                  .currentUser
-                  .updatePassword(vPass);
+              await Provider.of<SignUpIn>(context, listen: false).auth.currentUser.updatePassword(vPass);
               s = 'Successfully Changed';
             }
           } on FirebaseAuthException catch (e) {
@@ -50,14 +41,11 @@ class ChangeScreen extends StatelessWidget {
           s = 'Passwords do no match';
         }
         if (s == 'Successfully Changed') {
-          Provider.of<UserManage>(context, listen: false)
-              .showMyDialog(context, s, 0);
+          Provider.of<UserManage>(context, listen: false).showMyDialog(context, s, 0);
           _cFormKey.currentState.reset();
-        } else if(s!=null){
-          Provider.of<UserManage>(context, listen: false)
-              .errorDialog(s, context);
+        } else if (s != null) {
+          Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
         }
-        Provider.of<UserManage>(context, listen: false).toggle_Load();
       }
     }
 
@@ -73,8 +61,7 @@ class ChangeScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Password',
             suffixIcon: Icon(Icons.lock),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         onFieldSubmitted: (term) {
           _passFocus.unfocus();
           FocusScope.of(context).requestFocus(_verifyFocus);
@@ -92,8 +79,7 @@ class ChangeScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'New Password',
             suffixIcon: Icon(Icons.lock),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         onFieldSubmitted: (term) {
           _verifyFocus.unfocus();
           FocusScope.of(context).requestFocus(_newFocus);
@@ -111,8 +97,7 @@ class ChangeScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Verify Password',
             suffixIcon: Icon(Icons.lock),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         onFieldSubmitted: (term) {
           change();
         });
@@ -125,16 +110,12 @@ class ChangeScreen extends StatelessWidget {
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width / 3,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          onPressed: () {
-            if (_cFormKey.currentState.validate()) {
-              _cFormKey.currentState.save();
-            }
-            change();
+          onPressed: () async {
+            Provider.of<UserManage>(context, listen: false).toggle_Load();
+            await change();
+            Provider.of<UserManage>(context, listen: false).toggle_Load();
           },
-          child: Text('Change',
-              textAlign: TextAlign.center,
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          child: Text('Change', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ));
 
     return Scaffold(

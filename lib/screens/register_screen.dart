@@ -52,33 +52,25 @@ class RegisterScreen extends StatelessWidget {
       String s;
       if (_rFormKey.currentState.validate()) {
         _rFormKey.currentState.save();
-        FocusScope.of(context).requestFocus(FocusNode());
+        FocusScope.of(context).unfocus();
         if (pass == vPass) {
           if (result) {
             if (registerBool) {
               FocusScope.of(context).requestFocus(FocusNode());
-              await Provider.of<SignUpIn>(context, listen: false)
-                  .signUP(context, mail, pass, vPass);
-              if (Provider.of<UserManage>(context, listen: false).pointer ==
-                  0) {
-                Provider.of<FireStoreUni>(context, listen: false).
-      setStudentEntity(Student(id, name, mail, phone));
-                await Provider.of<FireStoreUni>(context, listen: false)
-                    .setStudent();
+              await Provider.of<SignUpIn>(context, listen: false).signUP(context, mail, pass, vPass);
+              if (Provider.of<UserManage>(context, listen: false).pointer == 0) {
+                Provider.of<FireStoreUni>(context, listen: false).setStudentEntity(Student(id, name, mail, phone));
+                await Provider.of<FireStoreUni>(context, listen: false).setStudent();
               }
-              if (Provider.of<UserManage>(context, listen: false).pointer ==
-                  2) {
-                Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(
-                    Faculty(id, name, mail, phone));
-                await Provider.of<FireStoreUni>(context, listen: false)
-                    .setFaculty();
+              if (Provider.of<UserManage>(context, listen: false).pointer == 2) {
+                Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(Faculty(id, name, mail, phone));
+                await Provider.of<FireStoreUni>(context, listen: false).setFaculty();
               }
-              Provider.of<FireStoreUni>(context, listen: false).setRegisteredEntity(Registered(id));
-              await Provider.of<FireStoreUni>(context,listen: false).setRegistered();
+              Provider.of<FireStoreUni>(context, listen: false).setRegisteredEntity(Registered(id, pass));
+              await Provider.of<FireStoreUni>(context, listen: false).setRegistered();
               s = Provider.of<SignUpIn>(context, listen: false).getMsg();
             } else {
-              s = Provider.of<UserManage>(context, listen: false).getName() +
-                  ' already registered.';
+              s = Provider.of<UserManage>(context, listen: false).getName() + ' already registered.';
             }
           } else {
             s = Provider.of<UserManage>(context, listen: false).getName() +
@@ -89,12 +81,10 @@ class RegisterScreen extends StatelessWidget {
           s = 'Password do not match with Verify password';
         }
         if (s == 'Success') {
-          Provider.of<UserManage>(context, listen: false)
-              .showMyDialog(context, 'Registered', 1);
+          Provider.of<UserManage>(context, listen: false).showMyDialog(context, 'Registered', 1);
           _rFormKey.currentState.reset();
         } else if (s != null) {
-          Provider.of<UserManage>(context, listen: false)
-              .errorDialog(s, context);
+          Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
         }
         result = false;
         registerBool = true;
@@ -113,8 +103,7 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Name',
             hintText: 'Enter Name',
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _nameFocus.unfocus();
           FocusScope.of(context).requestFocus(_phoneFocus);
@@ -131,8 +120,7 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Phone',
             hintText: 'Enter Phone No.',
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _phoneFocus.unfocus();
           FocusScope.of(context).requestFocus(_emailFocus);
@@ -143,15 +131,13 @@ class RegisterScreen extends StatelessWidget {
         keyboardType: TextInputType.emailAddress,
         textInputAction: TextInputAction.next,
         focusNode: _emailFocus,
-        validator: (input) =>
-            EmailValidator.validate(input) ? null : 'Invalid email address',
+        validator: (input) => EmailValidator.validate(input) ? null : 'Invalid email address',
         onSaved: (input) => mail = input,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Email',
             hintText: 'e.g. abc@gmail.com',
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _emailFocus.unfocus();
           FocusScope.of(context).requestFocus(_passFocus);
@@ -169,8 +155,7 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Password',
             suffixIcon: Icon(Icons.lock),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         onFieldSubmitted: (term) {
           _passFocus.unfocus();
           FocusScope.of(context).requestFocus(_verifyFocus);
@@ -188,8 +173,7 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: 'Verify Password',
             suffixIcon: Icon(Icons.lock),
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0))),
         onFieldSubmitted: (term) {
           _verifyFocus.unfocus();
           FocusScope.of(context).requestFocus(_idFocus);
@@ -206,8 +190,7 @@ class RegisterScreen extends StatelessWidget {
             contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
             labelText: Provider.of<UserManage>(context).getName() + ' Id',
             hintText: 'Enter Id.',
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _idFocus.unfocus();
         });
@@ -244,10 +227,7 @@ class RegisterScreen extends StatelessWidget {
                 }
                 register();
               },
-              child: Text('Register',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold)),
+              child: Text('Register', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             );
           }),
     );
@@ -274,8 +254,7 @@ class RegisterScreen extends StatelessWidget {
                 value: Provider.of<UserManage>(context).selected,
                 icon: Icon(Icons.arrow_drop_down),
                 iconDisabledColor: Colors.blueAccent,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
                 underline: Container(
                   height: 1,
                   color: Colors.blueAccent,
@@ -289,6 +268,7 @@ class RegisterScreen extends StatelessWidget {
                 onChanged: (String newValue) {
                   if (_rFormKey.currentState.validate()) {
                     _rFormKey.currentState.save();
+                    FocusScope.of(context).unfocus();
                     var len = snapshot.data.length;
                     for (var i = 0; i < len; ++i) {
                       if (snapshot.data[i].Name == newValue) {
@@ -299,12 +279,10 @@ class RegisterScreen extends StatelessWidget {
                       }
                     }
                   }
-                  Provider.of<UserManage>(context, listen: false)
-                      .setSelected(newValue);
+                  Provider.of<UserManage>(context, listen: false).setSelected(newValue);
                 },
                 hint: Text(
-                  'Please select a ' +
-                      Provider.of<UserManage>(context).getDrop(),
+                  'Please select a ' + Provider.of<UserManage>(context).getDrop(),
                   style: TextStyle(color: Colors.blueAccent),
                 ),
               ),
@@ -334,8 +312,7 @@ class RegisterScreen extends StatelessWidget {
                 value: Provider.of<UserManage>(context).selected,
                 icon: Icon(Icons.arrow_drop_down),
                 iconDisabledColor: Colors.blueAccent,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blueAccent),
                 underline: Container(
                   height: 1,
                   color: Colors.blueAccent,
@@ -349,6 +326,7 @@ class RegisterScreen extends StatelessWidget {
                 onChanged: (String newValue) {
                   if (_rFormKey.currentState.validate()) {
                     _rFormKey.currentState.save();
+                    FocusScope.of(context).unfocus();
                     var len = snapshot.data.length;
                     for (var i = 0; i < len; ++i) {
                       if (snapshot.data[i].Name == newValue) {
@@ -361,12 +339,10 @@ class RegisterScreen extends StatelessWidget {
                       }
                     }
                   }
-                  Provider.of<UserManage>(context, listen: false)
-                      .setSelected(newValue);
+                  Provider.of<UserManage>(context, listen: false).setSelected(newValue);
                 },
                 hint: Text(
-                  'Please select a ' +
-                      Provider.of<UserManage>(context).getDrop(),
+                  'Please select a ' + Provider.of<UserManage>(context).getDrop(),
                   style: TextStyle(color: Colors.blueAccent),
                 ),
               ),
@@ -380,9 +356,7 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         elevation: 25,
-        title: Center(
-            child: Text(
-                Provider.of<UserManage>(context).getName() + ' Registration')),
+        title: Center(child: Text(Provider.of<UserManage>(context).getName() + ' Registration')),
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(right: 20.0),

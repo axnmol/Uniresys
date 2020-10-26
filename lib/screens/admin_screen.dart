@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:loading_overlay/loading_overlay.dart';
@@ -28,7 +29,6 @@ class AdminScreen extends StatelessWidget {
   final FocusNode _creditsFocus = FocusNode();
   final FocusNode _seatsFocus = FocusNode();
   final FocusNode _facIdFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
 
   List<Course> courses = <Course>[];
@@ -43,7 +43,194 @@ class AdminScreen extends StatelessWidget {
     var userManage = Provider.of<UserManage>(context);
 
     int mainId, credits, seats, facId;
-    String name, ids, email, phone;
+    String name, ids, phone;
+
+    List<int> convertS2L(String s) {
+      List<int> result;
+      result = s.split(',').map(int.parse).toList();
+      return result;
+    }
+
+    void maintain() async {
+      userManage.toggle_Load();
+      String error;
+      try {
+        switch (adminManage.maintainSelect) {
+          case 0:
+            switch (adminManage.crudSelect){
+              case 1:
+                if (_updateFormKey.currentState.validate()) {
+                  _updateFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  students.forEach((element) {
+                    if (element.Name == name && element.Id != adminManage.id) {
+                      error = 'Student already exists';
+                    }
+                  });
+                  if (error == null) {
+                    fireStoreUni.setStudentEntity(Student(adminManage.id, name, students[adminManage.it].Email, phone));
+                    await fireStoreUni.setStudent();
+                  }
+                  _updateFormKey.currentState.reset();
+                }
+                adminManage.setIt(0);
+                break;
+              case 3:
+                await fireStoreUni.delStudent(adminManage.id.toString());
+                await fireStoreUni.delRegistered(adminManage.id.toString());
+                adminManage.setIt(0);
+                break;
+              default:
+                break;
+            }
+            break;
+          case 1:
+            switch (adminManage.crudSelect){
+              case 1:
+                if (_updateFormKey.currentState.validate()) {
+                  _updateFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  faculties.forEach((element) {
+                    if (element.Name == name && element.Id != adminManage.id) {
+                      error = 'Faculty already exists';
+                    }
+                  });
+                  if (error == null) {
+                    fireStoreUni.setFacultyEntity(Faculty(adminManage.id,name,faculties[adminManage.it].Email,phone));
+                    await fireStoreUni.setFaculty();
+                  }
+                  _updateFormKey.currentState.reset();
+                }
+                adminManage.setIt(0);
+                break;
+              case 3:
+                await fireStoreUni.delFaculty(adminManage.id.toString());
+                await fireStoreUni.delRegistered(adminManage.id.toString());
+                adminManage.setIt(0);
+                break;
+              default:
+                break;
+            }
+            break;
+          case 2:
+            switch (adminManage.crudSelect) {
+              case 0:
+                if (_addDegreeFormKey.currentState.validate()) {
+                  _addDegreeFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  degrees.forEach((element) {
+                    if (element.Id == mainId || element.Name == name) {
+                      error = 'Degree already exists';
+                    }
+                    element.Student_Ids.forEach((stuId) {
+                      if (convertS2L(ids).contains(stuId)) {
+                        error = 'One of the student ids already exists ';
+                      }
+                    });
+                  });
+                  if (error == null) {
+                    fireStoreUni.setDegreeEntity(Degree(mainId, name, convertS2L(ids)));
+                    await fireStoreUni.setDegree();
+                  }
+                  _addDegreeFormKey.currentState.reset();
+                }
+                break;
+              case 1:
+                if (_addDegreeFormKey.currentState.validate()) {
+                  _addDegreeFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  degrees.forEach((element) {
+                    if (element.Name == name && element.Id != adminManage.id) {
+                      error = 'Degree already exists';
+                    }
+                    element.Student_Ids.forEach((stuId) {
+                      if (convertS2L(ids).contains(stuId) && element.Id != adminManage.id) {
+                        error = 'One of the student ids already exists ';
+                      }
+                    });
+                  });
+                  if (error == null) {
+                    fireStoreUni.setDegreeEntity(Degree(adminManage.id, name, convertS2L(ids)));
+                    await fireStoreUni.setDegree();
+                  }
+                  _addDegreeFormKey.currentState.reset();
+                }
+                adminManage.setIt(0);
+                break;
+              case 3:
+                await degrees[adminManage.it].Student_Ids.forEach((element) {
+                  fireStoreUni.delStudent(element.toString());
+                  fireStoreUni.delRegistered(element.toString());
+                });
+                await fireStoreUni.delDegree(adminManage.id.toString());
+                adminManage.setIt(0);
+                break;
+              default:
+                break;
+            }
+            break;
+          case 3:
+            switch (adminManage.crudSelect) {
+              case 0:
+                if (_addCourseFormKey.currentState.validate()) {
+                  _addCourseFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  courses.forEach((element) {
+                    if (element.Id == mainId || element.Name == name || element.Faculty_Id == facId) {
+                      error = 'Course already exists';
+                    }
+                  });
+                  if (convertS2L(ids).length > seats) {
+                    error = 'Students cannot be more than seats';
+                  }
+                  if (error == null) {
+                    fireStoreUni.setCourseEntity(Course(mainId, name, facId, credits, seats, convertS2L(ids)));
+                    await fireStoreUni.setCourse();
+                  }
+                  _addCourseFormKey.currentState.reset();
+                }
+                break;
+              case 1:
+                if (_addCourseFormKey.currentState.validate()) {
+                  _addCourseFormKey.currentState.save();
+                  FocusScope.of(context).unfocus();
+                  courses.forEach((element) {
+                    if ((element.Name == name || element.Faculty_Id == facId) && element.Id != adminManage.id) {
+                      error = 'Course already exists';
+                    }
+                  });
+                  if (error == null) {
+                    fireStoreUni.setCourseEntity(Course(adminManage.id, name, facId, credits, seats, convertS2L(ids)));
+                    await fireStoreUni.setCourse();
+                  }
+                  _addCourseFormKey.currentState.reset();
+                }
+                adminManage.setIt(0);
+                break;
+              case 3:
+                await fireStoreUni.delFaculty(courses[adminManage.it].Faculty_Id.toString());
+                await fireStoreUni.delRegistered(courses[adminManage.it].Faculty_Id.toString());
+                await fireStoreUni.delCourse(adminManage.id.toString());
+                adminManage.setIt(0);
+                break;
+              default:
+                break;
+            }
+            break;
+          default:
+            break;
+        }
+      } on FirebaseException catch (e) {
+        error = e.code.toString().toUpperCase();
+      }
+      if (error == null) {
+        userManage.showMyDialog(context, adminManage.action[adminManage.crudSelect] + ' Successful', 0);
+        _innerDrawerKey.currentState.toggle();
+      } else {
+        userManage.errorDialog(error, context);
+      }
+      userManage.toggle_Load();
+    }
 
     final idField = TextFormField(
         keyboardType: TextInputType.number,
@@ -91,22 +278,6 @@ class AdminScreen extends StatelessWidget {
             border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
         onFieldSubmitted: (term) {
           _nameFocus.unfocus();
-        });
-
-    final emailField = TextFormField(
-        keyboardType: TextInputType.text,
-        style: TextStyle(),
-        textInputAction: TextInputAction.done,
-        focusNode: _emailFocus,
-        validator: (input) => input.isEmpty ? 'Required' : null,
-        onSaved: (input) => email = input,
-        decoration: InputDecoration(
-            contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-            labelText: adminManage.maintain[adminManage.maintainSelect] + ' Email',
-            hintText: 'Enter Mail',
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(30.0))),
-        onFieldSubmitted: (term) {
-          _emailFocus.unfocus();
         });
 
     final phoneField = TextFormField(
@@ -216,7 +387,7 @@ class AdminScreen extends StatelessWidget {
     final addCourse = Material(
       color: Colors.white,
       child: Padding(
-        padding: EdgeInsets.all(30.0),
+        padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
         child: Form(
           key: _addCourseFormKey,
           child: Column(
@@ -261,10 +432,6 @@ class AdminScreen extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              emailField,
-              SizedBox(
-                height: 20,
-              ),
               phoneField
             ],
           ),
@@ -281,12 +448,7 @@ class AdminScreen extends StatelessWidget {
           minWidth: MediaQuery.of(context).size.width / 3,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           onPressed: () {
-            if (_addDegreeFormKey.currentState.validate()) {
-              _addDegreeFormKey.currentState.save();
-              print(id);
-              print(name);
-              print(ids);
-            }
+            maintain();
           },
           child: Text(adminManage.action[adminManage.crudSelect] + ' ' + adminManage.maintain[adminManage.maintainSelect],
               textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
@@ -442,7 +604,7 @@ class AdminScreen extends StatelessWidget {
                 ),
               ),
             ),
-          if(adminManage.maintainSelect==2)
+          if (adminManage.maintainSelect == 2)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ListTile(
@@ -782,7 +944,7 @@ class AdminScreen extends StatelessWidget {
                   },
                   child: ListView.builder(
                       physics: BouncingScrollPhysics(),
-                      itemCount: courses.length,
+                      itemCount: degrees.length,
                       itemBuilder: (BuildContext context, int index) {
                         return ListTile(
                           leading: Padding(
@@ -1011,7 +1173,6 @@ class AdminScreen extends StatelessWidget {
           } else {
             _innerDrawerKey.currentState.open(direction: InnerDrawerDirection.start);
             _idFormKey.currentState.reset();
-            _addDegreeFormKey.currentState.reset();
           }
         }
       } else {
@@ -1028,6 +1189,9 @@ class AdminScreen extends StatelessWidget {
         minWidth: MediaQuery.of(context).size.width / 3,
         padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         onPressed: () {
+          if(_addDegreeFormKey.currentState!=null)_addDegreeFormKey.currentState.reset();
+          if(_addCourseFormKey.currentState!=null)_addCourseFormKey.currentState.reset();
+          if(_updateFormKey.currentState!=null)_updateFormKey.currentState.reset();
           handle();
         },
         child: Text(adminManage.action[adminManage.crudSelect] + '  ' + adminManage.maintain[adminManage.maintainSelect],
@@ -1685,6 +1849,7 @@ class AdminScreen extends StatelessWidget {
           }),
     );
   }
+
   //  Current State of InnerDrawerState
   final GlobalKey<InnerDrawerState> _innerDrawerKey = GlobalKey<InnerDrawerState>();
 }

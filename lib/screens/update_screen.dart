@@ -29,8 +29,7 @@ class UpdateScreen extends StatelessWidget {
       String s;
       if (_uFormKey.currentState.validate()) {
         _uFormKey.currentState.save();
-        FocusScope.of(context).requestFocus(FocusNode());
-        Provider.of<UserManage>(context, listen: false).toggle_Load();
+        FocusScope.of(context).unfocus();
         try {
           await Provider.of<SignUpIn>(context, listen: false).auth.currentUser.updateEmail(mail);
           var x = Provider.of<UserManage>(context, listen: false).pointer;
@@ -57,7 +56,6 @@ class UpdateScreen extends StatelessWidget {
         } else if (s != null) {
           Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
         }
-        Provider.of<UserManage>(context, listen: false).toggle_Load();
       }
     }
 
@@ -103,11 +101,10 @@ class UpdateScreen extends StatelessWidget {
         child: MaterialButton(
           minWidth: MediaQuery.of(context).size.width / 3,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-          onPressed: () {
-            if (_uFormKey.currentState.validate()) {
-              _uFormKey.currentState.save();
-            }
-            update();
+          onPressed: () async {
+            Provider.of<UserManage>(context, listen: false).toggle_Load();
+            await update();
+            Provider.of<UserManage>(context, listen: false).toggle_Load();
           },
           child: Text('Update', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ));
