@@ -74,6 +74,8 @@ class AdminScreen extends StatelessWidget {
                     await fireStoreUni.setStudent();
                   }
                   _updateFormKey.currentState.reset();
+                } else {
+                  error = 'Invalid Details';
                 }
                 adminManage.setIt(0);
                 break;
@@ -104,6 +106,8 @@ class AdminScreen extends StatelessWidget {
                     await fireStoreUni.setFaculty();
                   }
                   _updateFormKey.currentState.reset();
+                } else {
+                  error = 'Invalid Details';
                 }
                 adminManage.setIt(0);
                 break;
@@ -141,6 +145,8 @@ class AdminScreen extends StatelessWidget {
                     await fireStoreUni.setDegree();
                   }
                   _addDegreeFormKey.currentState.reset();
+                } else {
+                  error = 'Invalid Details';
                 }
                 break;
               case 1:
@@ -166,6 +172,8 @@ class AdminScreen extends StatelessWidget {
                     await fireStoreUni.setDegree();
                   }
                   _addDegreeFormKey.currentState.reset();
+                } else {
+                  error = 'Invalid Details';
                 }
                 adminManage.setIt(0);
                 break;
@@ -204,6 +212,8 @@ class AdminScreen extends StatelessWidget {
                     await fireStoreUni.setCourse();
                   }
                   _addCourseFormKey.currentState.reset();
+                } else {
+                  error = 'Invalid Details';
                 }
                 break;
               case 1:
@@ -222,6 +232,8 @@ class AdminScreen extends StatelessWidget {
                     await fireStoreUni.setCourse();
                   }
                   _addCourseFormKey.currentState.reset();
+                } else {
+                  error = 'Invalid Details';
                 }
                 adminManage.setIt(0);
                 break;
@@ -1384,7 +1396,7 @@ class AdminScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
+                              isLoading: Provider.of<UserManage>(context).isLoad,
                               opacity: 0.5,
                               progressIndicator: SpinKitDoubleBounce(
                                 color: Colors.white,
@@ -1859,7 +1871,7 @@ class AdminScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
+                              isLoading: Provider.of<UserManage>(context).isLoad,
                               opacity: 0.5,
                               progressIndicator: SpinKitDoubleBounce(
                                 color: Colors.white,

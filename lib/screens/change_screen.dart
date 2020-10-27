@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:uniresys/entities/entities.dart';
 
 import 'package:uniresys/flutterfire/fireauth.dart';
+import 'package:uniresys/flutterfire/firestore.dart';
 import 'package:uniresys/users.dart';
 
 class ChangeScreen extends StatelessWidget {
@@ -21,6 +23,11 @@ class ChangeScreen extends StatelessWidget {
     String pass, newPass, vPass;
 
     void change() async {
+      Provider.of<UserManage>(context,listen: false).toggle_Load();
+      int id;
+      var x = Provider.of<UserManage>(context, listen: false).pointer;
+      if (x == 0) id = Provider.of<FireStoreUni>(context, listen: false).student.Id;
+      if (x == 2) id = Provider.of<FireStoreUni>(context, listen: false).faculty.Id;
       String s;
       if (_cFormKey.currentState.validate()) {
         _cFormKey.currentState.save();
@@ -32,6 +39,10 @@ class ChangeScreen extends StatelessWidget {
             var authResult = await Provider.of<SignUpIn>(context, listen: false).auth.currentUser.reauthenticateWithCredential(credential);
             if (authResult != null) {
               await Provider.of<SignUpIn>(context, listen: false).auth.currentUser.updatePassword(vPass);
+              if (id != null) {
+                await Provider.of<FireStoreUni>(context, listen: false).setRegisteredEntity(Registered(id, vPass));
+                await Provider.of<FireStoreUni>(context, listen: false).setRegistered();
+              }
               s = 'Successfully Changed';
             }
           } on FirebaseAuthException catch (e) {
@@ -44,9 +55,10 @@ class ChangeScreen extends StatelessWidget {
           Provider.of<UserManage>(context, listen: false).showMyDialog(context, s, 0);
           _cFormKey.currentState.reset();
         } else if (s != null) {
-          Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
+          await Provider.of<UserManage>(context, listen: false).errorDialog(s, context);
         }
       }
+      Provider.of<UserManage>(context,listen: false).toggle_Load();
     }
 
     final passField = TextFormField(
@@ -114,9 +126,7 @@ class ChangeScreen extends StatelessWidget {
           minWidth: MediaQuery.of(context).size.width / 3,
           padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
           onPressed: () async {
-            Provider.of<UserManage>(context, listen: false).toggle_Load();
             await change();
-            Provider.of<UserManage>(context, listen: false).toggle_Load();
           },
           child: Text('Change', textAlign: TextAlign.center, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         ));
@@ -161,7 +171,7 @@ class ChangeScreen extends StatelessWidget {
             ),
           ),
         ),
-        isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
+        isLoading: Provider.of<UserManage>(context).isLoad,
         opacity: 0.5,
         progressIndicator: SpinKitDoubleBounce(
           color: Colors.white,

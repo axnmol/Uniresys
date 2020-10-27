@@ -58,16 +58,6 @@ class RegisterScreen extends StatelessWidget {
             if (registerBool) {
               FocusScope.of(context).requestFocus(FocusNode());
               await Provider.of<SignUpIn>(context, listen: false).signUP(context, mail, pass, vPass);
-              if (Provider.of<UserManage>(context, listen: false).pointer == 0) {
-                Provider.of<FireStoreUni>(context, listen: false).setStudentEntity(Student(id, name, mail, phone));
-                await Provider.of<FireStoreUni>(context, listen: false).setStudent();
-              }
-              if (Provider.of<UserManage>(context, listen: false).pointer == 2) {
-                Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(Faculty(id, name, mail, phone));
-                await Provider.of<FireStoreUni>(context, listen: false).setFaculty();
-              }
-              Provider.of<FireStoreUni>(context, listen: false).setRegisteredEntity(Registered(id, pass));
-              await Provider.of<FireStoreUni>(context, listen: false).setRegistered();
               s = Provider.of<SignUpIn>(context, listen: false).getMsg();
             } else {
               s = Provider.of<UserManage>(context, listen: false).getName() + ' already registered.';
@@ -81,6 +71,16 @@ class RegisterScreen extends StatelessWidget {
           s = 'Password do not match with Verify password';
         }
         if (s == 'Success') {
+          if (Provider.of<UserManage>(context, listen: false).pointer == 0) {
+            Provider.of<FireStoreUni>(context, listen: false).setStudentEntity(Student(id, name, mail, phone));
+            await Provider.of<FireStoreUni>(context, listen: false).setStudent();
+          }
+          if (Provider.of<UserManage>(context, listen: false).pointer == 2) {
+            Provider.of<FireStoreUni>(context, listen: false).setFacultyEntity(Faculty(id, name, mail, phone));
+            await Provider.of<FireStoreUni>(context, listen: false).setFaculty();
+          }
+          Provider.of<FireStoreUni>(context, listen: false).setRegisteredEntity(Registered(id, pass));
+          await Provider.of<FireStoreUni>(context, listen: false).setRegistered();
           Provider.of<UserManage>(context, listen: false).showMyDialog(context, 'Registered', 1);
           _rFormKey.currentState.reset();
         } else if (s != null) {
@@ -412,7 +412,7 @@ class RegisterScreen extends StatelessWidget {
             ),
           ),
         ),
-        isLoading: Provider.of<UserManage>(context, listen: false).isLoad,
+        isLoading: Provider.of<UserManage>(context).isLoad,
         opacity: 0.5,
         progressIndicator: SpinKitDoubleBounce(
           color: Colors.white,

@@ -5,7 +5,7 @@ class AdminManage extends ChangeNotifier {
   int crudSelect = 4;
   List<String> action = ['Add', 'Update', 'View', 'Delete', ''];
   List<String> maintain = ['Student', 'Faculty', 'Degree', 'Course', ''];
-  List<String> idFormat = ['[4XX]','[3XX]','[1XX]','[2XX]'];
+  List<String> idFormat = ['[4XX]', '[3XX]', '[1XX]', '[2XX]', '[0XX]'];
   int id, it = 0;
   bool viewAll = false;
 
