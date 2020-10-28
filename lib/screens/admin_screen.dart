@@ -168,7 +168,10 @@ class AdminScreen extends StatelessWidget {
                     },
                   );
                   if (error == null) {
-                    fireStoreUni.setDegreeEntity(Degree(adminManage.id, name, convertS2L(ids)));
+                    List<int> tempList= convertS2L(ids) + degrees[adminManage.it].Student_Ids;
+                    Set<int> x = tempList.toSet();
+                    tempList = x.toList();
+                    fireStoreUni.setDegreeEntity(Degree(adminManage.id, name, tempList));
                     await fireStoreUni.setDegree();
                   }
                   _addDegreeFormKey.currentState.reset();
