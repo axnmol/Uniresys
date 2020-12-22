@@ -1,6 +1,6 @@
 # Uniresys
 
-A new Flutter application.
+A Flutter application based on Uiversity Registration System with complete object oriented software engineering documentaion and implementation presentation.
 
 ## Introduction
 
