@@ -1,16 +1,10 @@
-# uniresys
+# Uniresys
 
 A new Flutter application.
 
-## Getting Started
+## Introduction
 
-This project is a starting point for a Flutter application.
+University Registration System(URS) is an user-friendly cross platform mobile application system compatible with both Android version  4.0+ and IOS version 12+ operating system. URS is an automated registration system , which is mainly concerned with easy and efficient registration of newly admitted students and faculty members of the University. The system allows the user to maintain an up to date profile and contact information and view relevant information, after logging into the system . 
+ 
+The system allows the Administrator of the University to maintain records of students currently enrolled in the University along with their contact information and courses enrolled by them and records of faculty currently teaching in the University. It also allows the administrator to maintain records of different degrees offered by the University and records of different courses offered in a particular semester.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
