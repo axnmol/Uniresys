@@ -8,3 +8,5 @@ University Registration System(URS) is an user-friendly cross platform mobile ap
  
 The system allows the Administrator of the University to maintain records of students currently enrolled in the University along with their contact information and courses enrolled by them and records of faculty currently teaching in the University. It also allows the administrator to maintain records of different degrees offered by the University and records of different courses offered in a particular semester.
 
+Please refer to the Uniresys.pdf in the repo for further documentation.
+
